@@ -1,0 +1,16 @@
+#### VERSION 0.1.0, July 22, 2026
+
+  Added Tubes:
+    - 6J6
+    - 6V6
+    - 12AU7
+    - 12AX7
+    - 5881
+    - 7199 Pentode
+    - 7199 Triode
+
+  Added Features:
+    - Interelectrode capacitance information from datasheet
+    - Design center ratings information from datasheet
+    - Heater information from datasheet
+    - Basic transfer curve plotting

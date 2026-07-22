@@ -1,0 +1,9 @@
+find_program(WinDeployQt6
+  NAMES "windeployqt6.exe"
+  REQUIRED
+)
+
+execute_process(
+  COMMAND ${WinDeployQt6} "LoadLineCalculator.exe"
+  WORKING_DIRECTORY "@CMAKE_INSTALL_PREFIX@/bin"
+)
