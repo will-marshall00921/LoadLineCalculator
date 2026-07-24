@@ -4,6 +4,9 @@
 
 #include "ScalableSpinBoxValue.hpp"
 #include <QtCore/QSignalBlocker>
+#ifdef DEBUG_BUILD
+#include <QtCore/QDebug>
+#endif // DEBUG_BUILD
 
 ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   : QWidget { parent }
@@ -19,6 +22,7 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   m_horizontalLayout->setObjectName("horizontalLayout");
   spinBox = new QSpinBox(this);
   spinBox->setObjectName("spinBox");
+  spinBox->setMinimum(0);
   QSizePolicy spinBoxSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
   spinBoxSizePolicy.setHorizontalStretch(0);
   spinBoxSizePolicy.setVerticalStretch(0);
@@ -111,7 +115,7 @@ QString ScalableSpinBoxValue::setUnitsText(const QString& units) {
   for (int i = 0 ; i < m_prefixes.size() ; i ++) {
     comboBox->setItemText(
       i,
-      (m_prefixes[i] == ' ') ? (QString("")) : (QString(1, m_prefixes[i])) + m_units_text
+      (m_prefixes[i] == ' ') ? (m_units_text) : (QString(1, m_prefixes[i])) + m_units_text
     );
   }
   emit unitsTextChanged(m_units_text);
@@ -128,18 +132,34 @@ int ScalableSpinBoxValue::setScaleIndex(int index) {
   return retval;
 }
 
+void ScalableSpinBoxValue::enablePlaceholder() {
+  QSignalBlocker comboBoxBlocker(comboBox);
+  QSignalBlocker spinBoxBlocker(spinBox);
+  comboBox->setPlaceholderText("--");
+  spinBox->setSpecialValueText("--");
+}
+
 void ScalableSpinBoxValue::updateValue(int rawValue, int scaleIndex) {
   if (rawValue != m_raw_value) { 
     m_raw_value = rawValue; 
     emit rawValueChanged(m_raw_value);
+    #ifdef DEBUG_BUILD
+    qDebug() << "[ScalableSpinBoxValue]{updateValue} New raw value: " << m_raw_value;
+    #endif // DEBUG_BUILD
   }
   if (scaleIndex != m_scaling) { 
     m_scaling = scaleIndex; 
     emit scalingRatioChanged(m_scales[m_scaling]);
+    #ifdef DEBUG_BUILD
+    qDebug() << "[ScalableSpinBoxValue]{updateValue} New scale prefix: " << m_prefixes[m_scaling];
+    #endif // DEBUG_BUILD
   }
   const double new_scaled_value = static_cast<double>(m_raw_value) * m_scales[m_scaling];
   if (m_scaled_value != new_scaled_value) {
     m_scaled_value = new_scaled_value;
     emit scaledValueChanged(m_scaled_value);
+    #ifdef DEBUG_BUILD
+    qDebug() << "[ScalableSpinBoxValue]{updateValue} New scaled value: " << m_scaled_value;
+    #endif // DEBUG_BUILD
   }
 }

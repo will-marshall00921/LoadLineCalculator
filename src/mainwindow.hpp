@@ -10,6 +10,7 @@
 #include "BaseValueLabel.hpp"
 #include "TubeManager.hpp"
 #include "Config.hpp"
+#include "Calculator.hpp"
 
 namespace Ui {
   class MainWindow;
@@ -21,6 +22,8 @@ class MainWindow : public QMainWindow {
   Ui::MainWindow* ui;
   TubeManager* m_tube_manager;
   Config m_config;
+  Calculator* m_calculator;
+  void* m_load_line_curve;
 
   public:
     MainWindow(QWidget* parent = nullptr);
@@ -48,6 +51,7 @@ class MainWindow : public QMainWindow {
     }
     void setupTubeManager();
     void setupConfig();
+    void setupCalculator();
 
     Q_SLOT void showStatus(const QString& msg);
 };

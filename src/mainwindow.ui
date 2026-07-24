@@ -517,14 +517,14 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0" colspan="2">
+        <item row="6" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine3">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="gridBiasVoltageLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -534,7 +534,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <widget class="QDoubleSpinBox" name="gridBiasVoltageSpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -545,9 +545,12 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="specialValueText">
+           <string>--</string>
+          </property>
          </widget>
         </item>
-        <item row="7" column="0" colspan="2">
+        <item row="8" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine4">
           <property name="frameShadow">
            <enum>QFrame::Shadow::Plain</enum>
@@ -557,14 +560,14 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="0" colspan="2">
+        <item row="10" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine5">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="11" column="0">
          <widget class="QLabel" name="stageInputPeakToPeakInputLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -574,7 +577,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="1">
+        <item row="11" column="1">
          <widget class="QDoubleSpinBox" name="stageInputPeakToPeakSpinBox">
           <property name="enabled">
            <bool>false</bool>
@@ -587,7 +590,7 @@
           </property>
          </widget>
         </item>
-        <item row="11" column="0" colspan="2">
+        <item row="12" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine6">
           <property name="frameShadow">
            <enum>QFrame::Shadow::Plain</enum>
@@ -597,14 +600,14 @@
           </property>
          </widget>
         </item>
-        <item row="13" column="0" colspan="2">
+        <item row="14" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine7">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="14" column="0">
+        <item row="15" column="0">
          <widget class="QLabel" name="stageOutputPeakToPeakLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -614,7 +617,7 @@
           </property>
          </widget>
         </item>
-        <item row="14" column="1">
+        <item row="15" column="1">
          <widget class="ValueLabel" name="stageOutputPeakToPeakValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -624,7 +627,7 @@
           </property>
          </widget>
         </item>
-        <item row="15" column="0" colspan="2">
+        <item row="16" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine8">
           <property name="frameShadow">
            <enum>QFrame::Shadow::Plain</enum>
@@ -634,14 +637,14 @@
           </property>
          </widget>
         </item>
-        <item row="17" column="0" colspan="2">
+        <item row="18" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine9">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="18" column="0">
+        <item row="19" column="0">
          <widget class="QLabel" name="biasCathodeCurrentLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -651,7 +654,7 @@
           </property>
          </widget>
         </item>
-        <item row="18" column="1">
+        <item row="19" column="1">
          <widget class="ValueLabel" name="biasCathodeCurrentValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -661,14 +664,14 @@
           </property>
          </widget>
         </item>
-        <item row="19" column="0" colspan="2">
+        <item row="20" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine10">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="20" column="0">
+        <item row="21" column="0">
          <widget class="QLabel" name="approxOutputPowerLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -678,7 +681,7 @@
           </property>
          </widget>
         </item>
-        <item row="20" column="1">
+        <item row="21" column="1">
          <widget class="ValueLabel" name="approxOutputPowerValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -688,7 +691,7 @@
           </property>
          </widget>
         </item>
-        <item row="21" column="0">
+        <item row="22" column="0">
          <widget class="QLabel" name="calculatedMaxPlateDissipationLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -698,7 +701,7 @@
           </property>
          </widget>
         </item>
-        <item row="21" column="1">
+        <item row="22" column="1">
          <widget class="ValueLabel" name="calculatedMaxPlateDissipationValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -708,7 +711,7 @@
           </property>
          </widget>
         </item>
-        <item row="22" column="0">
+        <item row="23" column="0">
          <widget class="QLabel" name="calculatedMaxScreenDissipationLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -718,7 +721,7 @@
           </property>
          </widget>
         </item>
-        <item row="22" column="1">
+        <item row="23" column="1">
          <widget class="ValueLabel" name="calculatedMaxScreenDissipationValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -728,7 +731,7 @@
           </property>
          </widget>
         </item>
-        <item row="23" column="0" colspan="2">
+        <item row="24" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine11">
           <property name="frameShadow">
            <enum>QFrame::Shadow::Plain</enum>
@@ -738,7 +741,7 @@
           </property>
          </widget>
         </item>
-        <item row="24" column="0" colspan="2">
+        <item row="25" column="0" colspan="2">
          <spacer name="loadLineVerticalSpacer">
           <property name="orientation">
            <enum>Qt::Orientation::Vertical</enum>
@@ -751,7 +754,7 @@
           </property>
          </spacer>
         </item>
-        <item row="16" column="0" colspan="2">
+        <item row="17" column="0" colspan="2">
          <widget class="QLabel" name="calculatedValuesLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -761,7 +764,7 @@
           </property>
          </widget>
         </item>
-        <item row="12" column="0" colspan="2">
+        <item row="13" column="0" colspan="2">
          <widget class="QLabel" name="stageOutputLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -781,13 +784,39 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0" colspan="2">
+        <item row="9" column="0" colspan="2">
          <widget class="QLabel" name="stageInputLabel">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Stage Input&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="loadLinePlateSupplyVoltageLabel">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Plate Supply Voltage:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="loadLinePlateSupplyVoltageSpinBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="specialValueText">
+           <string>--</string>
+          </property>
+          <property name="suffix">
+           <string> V</string>
+          </property>
+          <property name="maximum">
+           <number>9999</number>
           </property>
          </widget>
         </item>

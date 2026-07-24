@@ -45,6 +45,7 @@ class ScalableSpinBoxValue : public QWidget {
     Q_SLOT int setRawValue(int x);
     Q_SLOT QString setUnitsText(const QString& units);
     Q_SLOT int setScaleIndex(int index);
+    Q_SLOT void enablePlaceholder();
 
   private:
     void updateValue(int rawValue, int scaleIndex);

@@ -136,7 +136,7 @@ if __name__ == "__main__":
     cv2.imshow("Binary Transform", binary)
     while (not exited):
       exit_key = cv2.waitKey(20) & 0xFF
-      if exit_key == 27 or exit_key == ord('e'):
+      if exit_key == 27 or exit_key == ord('c'):
         cv2.destroyAllWindows()
         exited = True
       

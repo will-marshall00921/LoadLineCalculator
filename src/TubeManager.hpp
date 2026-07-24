@@ -91,6 +91,8 @@ class TubeManager : public QObject {
 
     ~TubeManager() noexcept;
 
+    const TubeRatings& currentTubeRatings() const noexcept;
+
     Q_SIGNAL void heaterVoltageChanged(TubeInfoEntry x);
     Q_SIGNAL void heaterCurrentChanged(TubeInfoEntry x);
     Q_SIGNAL void gridToPlateCapacitanceChanged(TubeInfoEntry x);
@@ -136,8 +138,6 @@ class TubeManager : public QObject {
     TubeRatings m_ratings;
 
     static bool checkClearEntry(TubeInfoEntry& ti, const TubeInfoEntry& ce);
-
-
 };
 
 #endif // TUBEMANAGER_HPP

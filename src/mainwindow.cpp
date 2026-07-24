@@ -13,12 +13,16 @@ MainWindow::MainWindow(QWidget* parent)
   : QMainWindow { parent }
   , ui { new Ui::MainWindow }
   , m_tube_manager { new TubeManager }
+  , m_calculator { new Calculator }
   {
   ui->setupUi(this);
   ui->plotWidget->xAxis->setLabel("Plate Voltage [V]");
   ui->plotWidget->yAxis->setLabel("Plate Current [mA]");
+  ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
+  ui->loadResistanceScalableSpinBox->enablePlaceholder();
   setupTubeManager();
   setupConfig();
+  setupCalculator();
   QObject::connect(
     ui->tubeSelectComboBox,
     &QComboBox::currentTextChanged,
@@ -169,6 +173,16 @@ void MainWindow::setupTubeManager() {
         ui->plotWidget->plottable(i)->rescaleAxes((i != 0));
       }
       ui->plotWidget->replot();
+      ui->loadLinePlateSupplyVoltageSpinBox->setValue(
+        static_cast<int>(m_tube_manager->currentTubeRatings().max_plate_voltage.value)
+      );
+      ui->loadLinePlateSupplyVoltageLabel->setEnabled(true);
+      ui->loadLinePlateSupplyVoltageSpinBox->setEnabled(true);
+      ui->loadResistanceLabel->setEnabled(true);
+      ui->loadResistanceScalableSpinBox->setEnabled(true);
+      QSignalBlocker scalableSpinBoxBlocker(ui->loadResistanceScalableSpinBox);
+      ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
+      ui->loadResistanceScalableSpinBox->setScaleIndex(1);
     }
   );
   QObject::connect(
@@ -191,7 +205,12 @@ void MainWindow::setupTubeManager() {
     this,
     [&]() {
       ui->plotWidget->clearPlottables();
+      m_load_line_curve = nullptr;
       ui->plotWidget->replot();
+      ui->loadResistanceLabel->setEnabled(false);
+      ui->loadResistanceScalableSpinBox->enablePlaceholder();
+      ui->loadResistanceScalableSpinBox->setEnabled(false);
+      ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
     }
   );
 }
@@ -213,6 +232,54 @@ void MainWindow::setupConfig() {
   QObject::connect(
     &m_config,
     &Config::configMessage,
+    this,
+    &MainWindow::showStatus
+  );
+}
+
+void MainWindow::setupCalculator() {
+  QObject::connect(
+    m_tube_manager,
+    &TubeManager::curveLoaded,
+    m_calculator,
+    &Calculator::loadRawCurve
+  );
+  QObject::connect(
+    m_tube_manager,
+    &TubeManager::infoCleared,
+    m_calculator,
+    &Calculator::clearCurves
+  );
+  QObject::connect(
+    ui->loadResistanceScalableSpinBox,
+    &ScalableSpinBoxValue::scaledValueChanged,
+    m_calculator,
+    &Calculator::setLoadValue
+  );
+  QObject::connect(
+    ui->loadLinePlateSupplyVoltageSpinBox,
+    &QSpinBox::valueChanged,
+    m_calculator,
+    &Calculator::setPlateSupplyVoltage
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::plotLoadLine,
+    this,
+    [this](QVector<double> x, QVector<double> y) {
+      if (m_load_line_curve == nullptr) {
+        m_load_line_curve = reinterpret_cast<void*>(
+          new QCPCurve(ui->plotWidget->xAxis, ui->plotWidget->yAxis)
+        );
+      } 
+      reinterpret_cast<QCPCurve*>(m_load_line_curve)->setData(x, y);
+      reinterpret_cast<QCPCurve*>(m_load_line_curve)->setPen(QPen(Qt::red));
+      ui->plotWidget->replot();
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::calculatorMessage,
     this,
     &MainWindow::showStatus
   );

@@ -30,6 +30,10 @@ TubeManager::~TubeManager() noexcept {
   }
 }
 
+const TubeManager::TubeRatings& TubeManager::currentTubeRatings() const noexcept {
+  return m_ratings;
+}
+
 void TubeManager::clearTubeInfo() {
   TubeInfoEntry blankEntry;
   if (checkClearEntry(this->m_heater_info.heater_voltage, blankEntry)) {

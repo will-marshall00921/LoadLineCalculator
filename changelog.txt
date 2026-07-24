@@ -1,3 +1,11 @@
+#### VERSION 0.2.0, July 23, 2026
+
+  Added Tubes:
+    - 12AT7
+
+  Added Features:
+    - Basic load line plotting
+
 #### VERSION 0.1.0, July 22, 2026
 
   Added Tubes:
