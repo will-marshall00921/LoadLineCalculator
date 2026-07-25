@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget* parent)
   , ui { new Ui::MainWindow }
   , m_tube_manager { new TubeManager }
   , m_calculator { new Calculator }
+  , m_load_line_curve { nullptr }
+  , m_bias_point { nullptr }
   {
   ui->setupUi(this);
   ui->plotWidget->xAxis->setLabel("Plate Voltage [V]");
@@ -176,6 +178,7 @@ void MainWindow::setupTubeManager() {
       ui->loadLinePlateSupplyVoltageSpinBox->setValue(
         static_cast<int>(m_tube_manager->currentTubeRatings().max_plate_voltage.value)
       );
+      ui->loadLinePlateSupplyVoltageSpinBox->setSuffix(" V");
       ui->loadLinePlateSupplyVoltageLabel->setEnabled(true);
       ui->loadLinePlateSupplyVoltageSpinBox->setEnabled(true);
       ui->loadResistanceLabel->setEnabled(true);
@@ -183,6 +186,14 @@ void MainWindow::setupTubeManager() {
       QSignalBlocker scalableSpinBoxBlocker(ui->loadResistanceScalableSpinBox);
       ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
       ui->loadResistanceScalableSpinBox->setScaleIndex(1);
+      QSignalBlocker biasVoltageSpinBoxBlocker(ui->gridBiasVoltageSpinBox);
+      ui->gridBiasVoltageSpinBox->setValue(-100.0);
+      ui->gridBiasVoltageSpinBox->setSuffix(" V");
+      ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
+      ui->gridBiasVoltageLabel->setEnabled(true);
+      ui->gridBiasVoltageSpinBox->setEnabled(true);
+      ui->loadLineLabel->setEnabled(true);
+      ui->calculatedValuesLabel->setEnabled(true);
     }
   );
   QObject::connect(
@@ -206,11 +217,24 @@ void MainWindow::setupTubeManager() {
     [&]() {
       ui->plotWidget->clearPlottables();
       m_load_line_curve = nullptr;
+      m_bias_point = nullptr;
       ui->plotWidget->replot();
       ui->loadResistanceLabel->setEnabled(false);
       ui->loadResistanceScalableSpinBox->enablePlaceholder();
       ui->loadResistanceScalableSpinBox->setEnabled(false);
+      ui->gridBiasVoltageLabel->setEnabled(false);
+      QSignalBlocker gridBiasVoltageBlocker(ui->gridBiasVoltageSpinBox);
+      ui->gridBiasVoltageSpinBox->setValue(-100.0);
       ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
+      ui->gridBiasVoltageSpinBox->setEnabled(false);
+      ui->biasPlateCurrentLabel->setEnabled(false);
+      ui->biasPlateCurrentValueLabel->setPlaceholderEnabled(true);
+      ui->biasPlateCurrentValueLabel->setEnabled(false);
+      ui->biasPlateVoltageLabel->setEnabled(false);
+      ui->biasPlateVoltageValueLabel->setPlaceholderEnabled(true);
+      ui->biasPlateVoltageValueLabel->setEnabled(false);
+      ui->loadLineLabel->setEnabled(false);
+      ui->calculatedValuesLabel->setEnabled(false);
     }
   );
 }
@@ -263,6 +287,12 @@ void MainWindow::setupCalculator() {
     &Calculator::setPlateSupplyVoltage
   );
   QObject::connect(
+    ui->gridBiasVoltageSpinBox,
+    &QDoubleSpinBox::valueChanged,
+    m_calculator,
+    &Calculator::setBiasVoltage
+  );
+  QObject::connect(
     m_calculator,
     &Calculator::plotLoadLine,
     this,
@@ -275,6 +305,33 @@ void MainWindow::setupCalculator() {
       reinterpret_cast<QCPCurve*>(m_load_line_curve)->setData(x, y);
       reinterpret_cast<QCPCurve*>(m_load_line_curve)->setPen(QPen(Qt::red));
       ui->plotWidget->replot();
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::plotBiasPoint,
+    this,
+    [this](double x, double y) {
+      if (m_bias_point == nullptr) {
+        m_bias_point = new QCPCurve(ui->plotWidget->xAxis, ui->plotWidget->yAxis);
+        QCPCurve* bias_point_graph = reinterpret_cast<QCPCurve*>(m_bias_point);
+        bias_point_graph->setLineStyle(QCPCurve::LineStyle::lsNone);
+        bias_point_graph->setScatterStyle(QCPScatterStyle::ssCircle);
+      }
+      reinterpret_cast<QCPCurve*>(m_bias_point)->setData({x}, {y});
+      ui->plotWidget->replot();
+      ui->biasPlateCurrentLabel->setEnabled(true);
+      ui->biasPlateCurrentValueLabel->setValueAndUnits(
+        y,
+        "mA"
+      );
+      ui->biasPlateCurrentValueLabel->setEnabled(true);
+      ui->biasPlateVoltageLabel->setEnabled(true);
+      ui->biasPlateVoltageValueLabel->setValueAndUnits(
+        static_cast<int>(x),
+        "V"
+      );
+      ui->biasPlateVoltageValueLabel->setEnabled(true);
     }
   );
   QObject::connect(

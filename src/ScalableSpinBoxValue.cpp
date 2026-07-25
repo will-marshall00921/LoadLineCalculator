@@ -23,6 +23,7 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   spinBox = new QSpinBox(this);
   spinBox->setObjectName("spinBox");
   spinBox->setMinimum(0);
+  spinBox->setMaximum(9999);
   QSizePolicy spinBoxSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
   spinBoxSizePolicy.setHorizontalStretch(0);
   spinBoxSizePolicy.setVerticalStretch(0);

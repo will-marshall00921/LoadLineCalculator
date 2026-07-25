@@ -20,8 +20,16 @@ class Calculator : public QObject {
   
   QVector<IVCurve> m_raw_curves;
   QVector<InterpolatedCurve> m_interp_curves;
+  bool m_load_ohms_valid;
   double m_load_ohms;
+  bool m_plate_supply_valid;
   double m_plate_supply;
+  bool m_bias_valid;
+  double m_bias;
+  double m_calculated_ll_slope;
+  double m_calculated_ll_intercept;
+  double m_calculated_bias_va;
+  double m_calculated_bias_ia;
 
   public:
     enum class Mode {
@@ -34,6 +42,7 @@ class Calculator : public QObject {
     ~Calculator() noexcept;
 
     Q_SIGNAL void plotLoadLine(QVector<double> voltages_v, QVector<double> currents_ma);
+    Q_SIGNAL void plotBiasPoint(double v, double i);
     
     Q_SIGNAL void calculatorMessage(QString msg);
 
@@ -43,6 +52,8 @@ class Calculator : public QObject {
     Q_SLOT double setLoadValue(double r);
     
     Q_SLOT double setPlateSupplyVoltage(int v);
+
+    Q_SLOT double setBiasVoltage(double v);
     
     Q_SLOT Mode setMode(Mode mode);
 
@@ -63,6 +74,11 @@ class Calculator : public QObject {
     QPair<int, int> find_bounding_grid_curves(double tgt_vg);
 
     void calculateLoadLine();
+
+    void calculateBiasIntersection();
+
+    bool canCalculateLoadLine() const noexcept;
+    bool canCalculateBiasIntersection() const noexcept;
 };
 
 #endif // CALCULATOR_HPP

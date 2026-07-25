@@ -1,3 +1,16 @@
+#### VERSION 0.2.1, July 24, 2026
+
+  Added Features:
+    - Bias point calculation
+    - Bias point current and voltage readout
+
+  Bugfixes:
+    - Prevented the load line from attempting to calculate on initially loading 
+      a tube
+    - Made the grid bias voltage selection box go into special text mode initially
+    - Fixed the "Load Line" and "Calculated Values" labels not enabling when they
+      should
+
 #### VERSION 0.2.0, July 23, 2026
 
   Added Tubes:
