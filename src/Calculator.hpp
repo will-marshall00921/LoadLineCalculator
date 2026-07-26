@@ -26,10 +26,16 @@ class Calculator : public QObject {
   double m_plate_supply;
   bool m_bias_valid;
   double m_bias;
+  bool m_input_vpp_valid;
+  double m_input_vpp;
   double m_calculated_ll_slope;
   double m_calculated_ll_intercept;
   double m_calculated_bias_va;
   double m_calculated_bias_ia;
+  double m_calculated_output_max_ia;
+  double m_calculated_output_min_ia;
+  double m_calculated_output_max_va;
+  double m_calculated_output_min_va;
 
   public:
     enum class Mode {
@@ -41,8 +47,14 @@ class Calculator : public QObject {
 
     ~Calculator() noexcept;
 
+    Mode currentMode() const noexcept;
+
     Q_SIGNAL void plotLoadLine(QVector<double> voltages_v, QVector<double> currents_ma);
     Q_SIGNAL void plotBiasPoint(double v, double i);
+    Q_SIGNAL void plotIORange(
+      QVector<double> voltages_v,
+      QVector<double> currents_ma
+    );
     
     Q_SIGNAL void calculatorMessage(QString msg);
 
@@ -54,8 +66,10 @@ class Calculator : public QObject {
     Q_SLOT double setPlateSupplyVoltage(int v);
 
     Q_SLOT double setBiasVoltage(double v);
+
+    Q_SLOT double setInputVpp(double vpp);
     
-    Q_SLOT Mode setMode(Mode mode);
+    Q_SLOT Mode setMode(int mode);
 
   private:
     Mode m_mode;
@@ -71,14 +85,27 @@ class Calculator : public QObject {
       double m1, double b1
     );
 
-    QPair<int, int> find_bounding_grid_curves(double tgt_vg);
+    QPair<int, int> find_bounding_grid_curves(double tgt_vg) const;
 
     void calculateLoadLine();
 
     void calculateBiasIntersection();
 
+    void calculateIORange();
+
     bool canCalculateLoadLine() const noexcept;
     bool canCalculateBiasIntersection() const noexcept;
+    bool canCalculateIORange() const noexcept;
+
+    QPair<double, double> loadLineIntersect(
+      double vg, 
+      bool* intersect_found = nullptr
+    ) const;
+
+    double verticalIntersect(
+      double vg,
+      bool* intersect_found = nullptr
+    ) const;
 };
 
 #endif // CALCULATOR_HPP

@@ -1,3 +1,18 @@
+#### VERSION 0.3.0, July 26, 2026
+
+  Changes:
+    - Updated 5881 curves to be much smoother and less noisy
+
+  Added Features:
+    - Input range plotting
+    - Output range calculations
+    - Reactive load line calculations
+
+  Bugfixes:
+    - Prevented the user from setting a bias voltage before a load line has been
+      calculated
+    - Added a minimum size for the plot widget
+
 #### VERSION 0.2.2, July 25, 2026
 
   Added Features:

@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow {
   Calculator* m_calculator;
   void* m_load_line_curve;
   void* m_bias_point;
+  void* m_io_range;
 
   public:
     MainWindow(QWidget* parent = nullptr);

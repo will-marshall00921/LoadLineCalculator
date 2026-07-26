@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget* parent)
   , m_calculator { new Calculator }
   , m_load_line_curve { nullptr }
   , m_bias_point { nullptr }
+  , m_io_range { nullptr }
   {
   ui->setupUi(this);
   ui->plotWidget->xAxis->setLabel("Plate Voltage [V]");
@@ -186,14 +187,14 @@ void MainWindow::setupTubeManager() {
       QSignalBlocker scalableSpinBoxBlocker(ui->loadResistanceScalableSpinBox);
       ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
       ui->loadResistanceScalableSpinBox->setScaleIndex(1);
-      QSignalBlocker biasVoltageSpinBoxBlocker(ui->gridBiasVoltageSpinBox);
-      ui->gridBiasVoltageSpinBox->setValue(-100.0);
-      ui->gridBiasVoltageSpinBox->setSuffix(" V");
-      ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
-      ui->gridBiasVoltageLabel->setEnabled(true);
-      ui->gridBiasVoltageSpinBox->setEnabled(true);
       ui->loadLineLabel->setEnabled(true);
       ui->calculatedValuesLabel->setEnabled(true);
+      ui->loadLineModeLabel->setEnabled(true);
+      ui->loadLineModeComboBox->setEnabled(true);
+      if (m_calculator->currentMode() == Calculator::Mode::Reactive) {
+        ui->gridBiasVoltageLabel->setEnabled(true);
+        ui->gridBiasVoltageSpinBox->setEnabled(true);
+      }
     }
   );
   QObject::connect(
@@ -218,6 +219,7 @@ void MainWindow::setupTubeManager() {
       ui->plotWidget->clearPlottables();
       m_load_line_curve = nullptr;
       m_bias_point = nullptr;
+      m_io_range = nullptr;
       ui->plotWidget->replot();
       ui->loadResistanceLabel->setEnabled(false);
       ui->loadResistanceScalableSpinBox->enablePlaceholder();
@@ -235,6 +237,16 @@ void MainWindow::setupTubeManager() {
       ui->biasPlateVoltageValueLabel->setEnabled(false);
       ui->loadLineLabel->setEnabled(false);
       ui->calculatedValuesLabel->setEnabled(false);
+      ui->stageOutputPeakToPeakLabel->setEnabled(false);
+      ui->stageOutputPeakToPeakValueLabel->setPlaceholderEnabled(true);
+      ui->stageOutputPeakToPeakValueLabel->setEnabled(false);
+      ui->stageInputPeakToPeakLabel->setEnabled(false);
+      ui->stageInputPeakToPeakSpinBox->setEnabled(false);
+      QSignalBlocker stageInputSignalBlocker(ui->stageInputPeakToPeakSpinBox);
+      ui->stageInputPeakToPeakSpinBox->setValue(0.0);
+      ui->stageInputPeakToPeakSpinBox->setSpecialValueText("--");
+      ui->loadLineModeLabel->setEnabled(true);
+      ui->loadLineModeComboBox->setEnabled(true);
     }
   );
 }
@@ -293,6 +305,36 @@ void MainWindow::setupCalculator() {
     &Calculator::setBiasVoltage
   );
   QObject::connect(
+    ui->stageInputPeakToPeakSpinBox,
+    &QDoubleSpinBox::valueChanged,
+    m_calculator,
+    &Calculator::setInputVpp
+  );
+  QObject::connect(
+    ui->loadLineModeComboBox,
+    &QComboBox::currentIndexChanged,
+    m_calculator,
+    &Calculator::setMode
+  );
+  QObject::connect(
+    ui->loadLineModeComboBox,
+    &QComboBox::currentIndexChanged,
+    this,
+    [this](int x) {
+      if (x == 0) {
+        if (m_load_line_curve == nullptr) {
+          ui->gridBiasVoltageLabel->setEnabled(false);
+          ui->gridBiasVoltageSpinBox->setEnabled(false);
+          QSignalBlocker spinBoxBlocker(ui->gridBiasVoltageSpinBox);
+          ui->gridBiasVoltageSpinBox->setValue(-100.0);
+        }
+      } else {
+        ui->gridBiasVoltageLabel->setEnabled(true);
+        ui->gridBiasVoltageSpinBox->setEnabled(true);
+      }
+    }
+  );
+  QObject::connect(
     m_calculator,
     &Calculator::plotLoadLine,
     this,
@@ -305,6 +347,14 @@ void MainWindow::setupCalculator() {
       reinterpret_cast<QCPCurve*>(m_load_line_curve)->setData(x, y);
       reinterpret_cast<QCPCurve*>(m_load_line_curve)->setPen(QPen(Qt::red));
       ui->plotWidget->replot();
+      QSignalBlocker biasVoltageSpinBoxBlocker(ui->gridBiasVoltageSpinBox);
+      if (m_calculator->currentMode() != Calculator::Mode::Reactive) {
+        ui->gridBiasVoltageSpinBox->setValue(-100.0);
+        ui->gridBiasVoltageSpinBox->setSuffix(" V");
+        ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
+        ui->gridBiasVoltageLabel->setEnabled(true);
+        ui->gridBiasVoltageSpinBox->setEnabled(true);
+      }
     }
   );
   QObject::connect(
@@ -332,6 +382,40 @@ void MainWindow::setupCalculator() {
         "V"
       );
       ui->biasPlateVoltageValueLabel->setEnabled(true);
+      ui->stageInputPeakToPeakLabel->setEnabled(true);
+      ui->stageInputPeakToPeakSpinBox->setEnabled(true);
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::plotIORange,
+    this,
+    [this](QVector<double> x,QVector<double> y) {
+      if (m_io_range == nullptr) {
+        QCPCurve* io_range = new QCPCurve(ui->plotWidget->xAxis, ui->plotWidget->yAxis);
+        io_range->setLineStyle(QCPCurve::LineStyle::lsLine);
+        io_range->setScatterStyle(QCPScatterStyle::ssDiamond);
+        io_range->setPen(QPen(Qt::blue));
+        m_io_range = reinterpret_cast<void*>(io_range);
+      }
+      QCPCurve* io_range = reinterpret_cast<QCPCurve*>(m_io_range);
+      io_range->setData(x, y);
+      ui->plotWidget->replot();
+      ui->stageOutputPeakToPeakLabel->setEnabled(true);
+      try {
+        const double io_domain = (x.value(1) - x.value(0));
+        ui->stageOutputPeakToPeakValueLabel->setValueAndUnits(
+          (io_domain / 2.),
+          " V"
+        );
+        ui->stageOutputPeakToPeakValueLabel->setEnabled(true);
+      } catch (std::exception& e) {
+        showStatus(
+          QString("Encountered an error plotting the input range: ")
+            + e.what()
+        );
+        return;
+      }
     }
   );
   QObject::connect(
