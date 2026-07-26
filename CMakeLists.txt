@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
 project (LoadLineCalculator
-  VERSION 0.2.1
+  VERSION 0.2.2
   LANGUAGES CXX
 )
 
@@ -14,6 +14,14 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets PrintSupport)
 qt_standard_project_setup()
+
+set(LLC_ICO "${CMAKE_CURRENT_SOURCE_DIR}/src/resources/ico/llc_multi.ico")
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/loadlinecalculator.rc.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/loadlinecalculator.rc"
+  @ONLY
+)
 
 set(LoadLineCalculator_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LoadLineCalculator_SOURCES
@@ -46,6 +54,8 @@ set(LoadLineCalculator_HEADERS
 )
 set(LoadLineCalculator_UI_SOURCES
   "${LoadLineCalculator_SOURCE_DIR}/mainwindow.ui"
+  "${LoadLineCalculator_SOURCE_DIR}/loadlinecalculator.qrc"
+  "${CMAKE_CURRENT_BINARY_DIR}/loadlinecalculator.rc"
 )
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")

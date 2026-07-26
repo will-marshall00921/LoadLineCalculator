@@ -1,0 +1,18 @@
+<RCC>
+  <qresource prefix="png">
+    <file alias="llc_16_png">resources/png/llc_16.png</file>
+    <file alias="llc_24_png">resources/png/llc_24.png</file>
+    <file alias="llc_32_png">resources/png/llc_32.png</file>
+    <file alias="llc_64_png">resources/png/llc_64.png</file>
+    <file alias="llc_128_png">resources/png/llc_128.png</file>
+    <file alias="llc_256_png">resources/png/llc_256.png</file>
+  </qresource>
+  <qresource prefix="ico">
+    <file alias="llc_16_ico">resources/ico/llc_16.ico</file>
+    <file alias="llc_24_ico">resources/ico/llc_24.ico</file>
+    <file alias="llc_32_ico">resources/ico/llc_32.ico</file>
+    <file alias="llc_64_ico">resources/ico/llc_64.ico</file>
+    <file alias="llc_128_ico">resources/ico/llc_128.ico</file>
+    <file alias="llc_256_ico">resources/ico/llc_256.ico</file>
+  </qresource>
+</RCC>

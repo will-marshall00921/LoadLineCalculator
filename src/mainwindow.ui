@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string notr="true">LoadLineCalculator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="loadlinecalculator.qrc">
+    <normaloff>:/ico/llc_24_ico</normaloff>:/ico/llc_24_ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -919,6 +923,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="loadlinecalculator.qrc"/>
+ </resources>
  <connections/>
 </ui>
