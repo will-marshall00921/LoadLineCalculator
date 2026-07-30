@@ -1,3 +1,16 @@
+#### VERSION 0.3.1, July 30, 2026
+
+  Changes:
+    - Populated the menu bar
+    - Added calculated values for a self-bias resistor in the UI
+
+  Added Features:
+    - Ability to save the plot as a PNG
+    - Basic self-bias resistor calculation
+
+  Bugfixes:
+    - Fixed the calculated output peak-to-peak showing half the expected value
+
 #### VERSION 0.3.0, July 26, 2026
 
   Changes:

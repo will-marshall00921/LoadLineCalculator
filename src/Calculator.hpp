@@ -55,6 +55,10 @@ class Calculator : public QObject {
       QVector<double> voltages_v,
       QVector<double> currents_ma
     );
+
+    Q_SIGNAL void approximatedOutputPower(double p);
+    Q_SIGNAL void selfBiasRawResistance(double r, QString units);
+    Q_SIGNAL void selfBiasStandardResistance(double r, QString units);
     
     Q_SIGNAL void calculatorMessage(QString msg);
 

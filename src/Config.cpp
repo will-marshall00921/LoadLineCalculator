@@ -39,6 +39,28 @@ Config::Config(QObject* parent)
   }
 }
 
+Config::~Config() {
+  QString config_dir = QStandardPaths::writableLocation(
+    QStandardPaths::StandardLocation::AppDataLocation
+  );
+  QString config_path = config_dir + "/" + "configuration.json";
+  QJsonObject top_level_object;
+  top_level_object.insert(
+    "tube_directory",
+    QJsonValue::fromVariant(m_parameters.tube_directory)
+  );
+  top_level_object.insert(
+    "last_plot_save_path",
+    QJsonValue::fromVariant(m_parameters.last_plot_save_dir)
+  );
+  QJsonDocument config_json;
+  config_json.setObject(top_level_object);
+  QFile cfg_file(config_path);
+  if (cfg_file.open(QIODevice::WriteOnly)) {
+    cfg_file.write(config_json.toJson());
+  }
+}
+
 const Config::Parameters& Config::currentParameters() const noexcept {
   return m_parameters;
 }
@@ -60,14 +82,24 @@ void Config::parseTubeDirectory() {
   emit tubeDirectoryParsed(m_tube_map.keys());
 }
 
+void Config::updateLastPlotSaveDir(const QString& path) {
+  m_parameters.last_plot_save_dir = path;
+}
+
 Config::Parameters Config::createDefaultConfigFile(const QString& path) {
   QString default_tube_directory = (
     QStandardPaths::writableLocation(
       QStandardPaths::StandardLocation::AppDataLocation
     ) + "/tubes"
   );
+  QString default_plot_save_path = (
+    QStandardPaths::writableLocation(
+      QStandardPaths::StandardLocation::PicturesLocation
+    )
+  );
   QJsonObject config_top_object;
   config_top_object.insert("tube_directory", QJsonValue::fromVariant(default_tube_directory));
+  config_top_object.insert("last_plot_save_path", QJsonValue::fromVariant(default_plot_save_path));
   QJsonDocument config_json(config_top_object);
   QByteArray json_data = config_json.toJson();
   QDir tube_dir(default_tube_directory);
@@ -84,12 +116,23 @@ Config::Parameters Config::createDefaultConfigFile(const QString& path) {
   }
   Parameters default_parameters;
   default_parameters.tube_directory = default_tube_directory;
+  default_parameters.last_plot_save_dir = default_plot_save_path;
   return default_parameters;
 }
 
 void Config::readConfigFile(const QString& path) {
   QFile config_file(path);
   if (config_file.open(QIODevice::ReadOnly)) {
+    QString default_tube_directory = (
+    QStandardPaths::writableLocation(
+        QStandardPaths::StandardLocation::AppDataLocation
+      ) + "/tubes"
+    );
+    QString default_plot_save_path = (
+      QStandardPaths::writableLocation(
+        QStandardPaths::StandardLocation::PicturesLocation
+      )
+    );
     QByteArray json_data = config_file.readAll();
     config_file.close();
     QJsonDocument config_json = QJsonDocument::fromJson(json_data);
@@ -97,6 +140,14 @@ void Config::readConfigFile(const QString& path) {
     QJsonValue tube_directory_value = config_top_object.value("tube_directory");
     if (tube_directory_value.isString()) {
       m_parameters.tube_directory = tube_directory_value.toString();
+    } else {
+      m_parameters.tube_directory = default_tube_directory;
+    }
+    QJsonValue last_plot_save_dir_value = config_top_object.value("last_plot_save_path");
+    if (last_plot_save_dir_value.isString()) {
+      m_parameters.last_plot_save_dir = last_plot_save_dir_value.toString();
+    } else {
+      m_parameters.last_plot_save_dir = default_plot_save_path;
     }
     #ifdef DEBUG_BUILD
     qDebug() << "Read config file: " << path;

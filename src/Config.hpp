@@ -17,11 +17,12 @@ class Config : public QObject {
   public:
     struct Parameters {
       QString tube_directory;
+      QString last_plot_save_dir;
     };
 
     Config(QObject* parent = nullptr);
 
-    ~Config() noexcept {}
+    ~Config();
 
     const Parameters& currentParameters() const noexcept;
     QString tubePath(const QString& name) const;
@@ -30,6 +31,7 @@ class Config : public QObject {
     Q_SIGNAL void tubeDirectoryParsed(QStringList names);
 
     Q_SLOT void parseTubeDirectory();
+    Q_SLOT void updateLastPlotSaveDir(const QString& path);
 
   private:
     Parameters m_parameters;

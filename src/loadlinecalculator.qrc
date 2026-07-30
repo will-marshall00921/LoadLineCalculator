@@ -7,6 +7,14 @@
     <file alias="llc_128_png">resources/png/llc_128.png</file>
     <file alias="llc_256_png">resources/png/llc_256.png</file>
   </qresource>
+  <qresource prefix="icons">
+    <file alias="maximize_24_png">resources/png/icons/maximize_24.png</file>
+    <file alias="minimize_24_png">resources/png/icons/minimize_24.png</file>
+    <file alias="quit_24_png">resources/png/icons/quit_24.png</file>
+    <file alias="image_24_png">resources/png/icons/image_24.png</file>
+    <file alias="reload_24_png">resources/png/icons/reload_24.png</file>
+    <file alias="save_as_24_png">resources/png/icons/save_as_24.png</file>
+  </qresource>
   <qresource prefix="ico">
     <file alias="llc_16_ico">resources/ico/llc_16.ico</file>
     <file alias="llc_24_ico">resources/ico/llc_24.ico</file>

@@ -8,6 +8,7 @@
 #ifdef DEBUG_BUILD
 #include <QtCore/QDebug>
 #endif // DEBUG_BUILD
+#include <QtWidgets/QFileDialog>
 
 MainWindow::MainWindow(QWidget* parent)
   : QMainWindow { parent }
@@ -33,6 +34,36 @@ MainWindow::MainWindow(QWidget* parent)
     [&](QString name) {
       emit selectedTube(m_config.tubePath(name));
     }
+  );
+  QObject::connect(
+    ui->actionSavePlot,
+    &QAction::triggered,
+    this,
+    &MainWindow::savePlot
+  );
+  QObject::connect(
+    ui->actionReloadDirectory,
+    &QAction::triggered,
+    &m_config,
+    Config::parseTubeDirectory
+  );
+  QObject::connect(
+    ui->actionMaximize,
+    &QAction::triggered,
+    this,
+    &MainWindow::showMaximized
+  );
+  QObject::connect(
+    ui->actionMinimize,
+    &QAction::triggered,
+    this,
+    &MainWindow::showMinimized
+  );
+  QObject::connect(
+    ui->actionQuit,
+    &QAction::triggered,
+    this,
+    &MainWindow::close
   );
   m_config.parseTubeDirectory();
 }
@@ -180,8 +211,8 @@ void MainWindow::setupTubeManager() {
         static_cast<int>(m_tube_manager->currentTubeRatings().max_plate_voltage.value)
       );
       ui->loadLinePlateSupplyVoltageSpinBox->setSuffix(" V");
-      ui->loadLinePlateSupplyVoltageLabel->setEnabled(true);
-      ui->loadLinePlateSupplyVoltageSpinBox->setEnabled(true);
+      setLoadLineLabelEnabled(true);
+      setPlateSupplyVoltageEnabled(true);
       ui->loadResistanceLabel->setEnabled(true);
       ui->loadResistanceScalableSpinBox->setEnabled(true);
       QSignalBlocker scalableSpinBoxBlocker(ui->loadResistanceScalableSpinBox);
@@ -195,6 +226,7 @@ void MainWindow::setupTubeManager() {
         ui->gridBiasVoltageLabel->setEnabled(true);
         ui->gridBiasVoltageSpinBox->setEnabled(true);
       }
+      ui->actionSavePlot->setEnabled(true);
     }
   );
   QObject::connect(
@@ -221,32 +253,19 @@ void MainWindow::setupTubeManager() {
       m_bias_point = nullptr;
       m_io_range = nullptr;
       ui->plotWidget->replot();
-      ui->loadResistanceLabel->setEnabled(false);
-      ui->loadResistanceScalableSpinBox->enablePlaceholder();
-      ui->loadResistanceScalableSpinBox->setEnabled(false);
-      ui->gridBiasVoltageLabel->setEnabled(false);
-      QSignalBlocker gridBiasVoltageBlocker(ui->gridBiasVoltageSpinBox);
-      ui->gridBiasVoltageSpinBox->setValue(-100.0);
-      ui->gridBiasVoltageSpinBox->setSpecialValueText("--");
-      ui->gridBiasVoltageSpinBox->setEnabled(false);
-      ui->biasPlateCurrentLabel->setEnabled(false);
-      ui->biasPlateCurrentValueLabel->setPlaceholderEnabled(true);
-      ui->biasPlateCurrentValueLabel->setEnabled(false);
-      ui->biasPlateVoltageLabel->setEnabled(false);
-      ui->biasPlateVoltageValueLabel->setPlaceholderEnabled(true);
-      ui->biasPlateVoltageValueLabel->setEnabled(false);
-      ui->loadLineLabel->setEnabled(false);
-      ui->calculatedValuesLabel->setEnabled(false);
-      ui->stageOutputPeakToPeakLabel->setEnabled(false);
-      ui->stageOutputPeakToPeakValueLabel->setPlaceholderEnabled(true);
-      ui->stageOutputPeakToPeakValueLabel->setEnabled(false);
-      ui->stageInputPeakToPeakLabel->setEnabled(false);
-      ui->stageInputPeakToPeakSpinBox->setEnabled(false);
-      QSignalBlocker stageInputSignalBlocker(ui->stageInputPeakToPeakSpinBox);
-      ui->stageInputPeakToPeakSpinBox->setValue(0.0);
-      ui->stageInputPeakToPeakSpinBox->setSpecialValueText("--");
-      ui->loadLineModeLabel->setEnabled(true);
-      ui->loadLineModeComboBox->setEnabled(true);
+      setLoadLineLabelEnabled(false);
+      setStageInputLabelEnabled(false);
+      setStageOutputLabelEnabled(false);
+      setCalculatedValuesLabelEnabled(false);
+      setLoadResistanceEnabled(false);
+      setGridBiasVoltageEnabled(false);
+      setBiasPlateCurrentDisabled();
+      setBiasPlateVoltageDisabled();
+      setPeakToPeakOutputDisabled();
+      setPeakToPeakInputEnabled(false);
+      setLoadLineModeEnabled(false);
+      ui->actionSavePlot->setEnabled(false);
+      setSelfBiasRawResistanceDisabled();
     }
   );
 }
@@ -405,8 +424,8 @@ void MainWindow::setupCalculator() {
       try {
         const double io_domain = (x.value(1) - x.value(0));
         ui->stageOutputPeakToPeakValueLabel->setValueAndUnits(
-          (io_domain / 2.),
-          " V"
+          io_domain,
+          "V"
         );
         ui->stageOutputPeakToPeakValueLabel->setEnabled(true);
       } catch (std::exception& e) {
@@ -420,6 +439,14 @@ void MainWindow::setupCalculator() {
   );
   QObject::connect(
     m_calculator,
+    &Calculator::selfBiasRawResistance,
+    this,
+    [this](double r, const QString& units) {
+      setSelfBiasRawResistanceDisabled(true, r, units); 
+    }
+  );
+  QObject::connect(
+    m_calculator,
     &Calculator::calculatorMessage,
     this,
     &MainWindow::showStatus
@@ -428,4 +455,166 @@ void MainWindow::setupCalculator() {
 
 void MainWindow::showStatus(const QString& msg) {
   ui->statusBar->showMessage(msg, 30000);
+}
+
+void MainWindow::setLoadLineLabelEnabled(bool on) {
+  ui->loadLineLabel->setEnabled(on);
+}
+
+void MainWindow::setStageInputLabelEnabled(bool on) {
+  ui->stageInputLabel->setEnabled(on);
+}
+
+void MainWindow::setStageOutputLabelEnabled(bool on) {
+  ui->stageOutputLabel->setEnabled(on);
+}
+
+void MainWindow::setCalculatedValuesLabelEnabled(bool on) {
+  ui->calculatedValuesLabel->setEnabled(on);
+}
+
+void MainWindow::setLoadLineModeEnabled(bool on) {
+  ui->loadLineModeLabel->setEnabled(on);
+  ui->loadLineModeLabel->setEnabled(on);
+}
+
+void MainWindow::setLoadResistanceEnabled(bool on) {
+  ui->loadResistanceLabel->setEnabled(on);
+  ui->loadResistanceScalableSpinBox->setEnabled(on);
+  if (!on) { ui->loadResistanceScalableSpinBox->enablePlaceholder(); }
+}
+
+void MainWindow::setPlateSupplyVoltageEnabled(bool on) {
+  ui->loadLinePlateSupplyVoltageLabel->setEnabled(on);
+  ui->loadLinePlateSupplyVoltageSpinBox->setEnabled(on);
+  if (!on) {
+    ui->loadLinePlateSupplyVoltageSpinBox->setSpecialValueText("--");
+  }
+}
+
+void MainWindow::setGridBiasVoltageEnabled(bool on) {
+  ui->gridBiasVoltageLabel->setEnabled(on);
+  ui->gridBiasVoltageSpinBox->setEnabled(on);
+  if (!on) {
+    QSignalBlocker spinBoxBlocker(ui->gridBiasVoltageSpinBox);
+    ui->gridBiasVoltageSpinBox->setValue(ui->gridBiasVoltageSpinBox->minimum());
+  }
+}
+
+void MainWindow::setPeakToPeakInputEnabled(bool on) {
+  ui->stageInputPeakToPeakLabel->setEnabled(on);
+  ui->stageInputPeakToPeakSpinBox->setEnabled(on);
+  if (!on) {
+    QSignalBlocker spinBoxBlocker(ui->stageInputPeakToPeakSpinBox);
+    ui->stageInputPeakToPeakSpinBox->setValue(ui->stageInputPeakToPeakSpinBox->minimum());
+  }
+}
+
+void MainWindow::setPeakToPeakOutputDisabled(
+  bool on,
+  double v
+) {
+  ui->stageOutputPeakToPeakLabel->setEnabled(on);
+  ui->stageOutputPeakToPeakValueLabel->setEnabled(on);
+  if (on) {
+    ui->stageOutputPeakToPeakValueLabel->setValueAndUnits(v, "V");
+  } else {
+    ui->stageOutputPeakToPeakValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setBiasPlateCurrentDisabled(
+  bool on,
+  double i
+) {
+  ui->biasPlateCurrentLabel->setEnabled(on);
+  ui->biasPlateCurrentValueLabel->setEnabled(on);
+  if (on) {
+    ui->biasPlateCurrentValueLabel->setValueAndUnits(i, "mA");
+  } else {
+    ui->biasPlateCurrentValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setBiasPlateVoltageDisabled(
+  bool on,
+  double v
+) {
+  ui->biasPlateVoltageLabel->setEnabled(on);
+  ui->biasPlateVoltageValueLabel->setEnabled(on);
+  if (on) {
+    ui->biasPlateVoltageValueLabel->setValueAndUnits(v, "V");
+  } else {
+    ui->biasPlateVoltageValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setApproxOutputPowerDisabled(
+  bool on,
+  double p
+) {
+  ui->approxOutputPowerLabel->setEnabled(on);
+  ui->approxOutputPowerValueLabel->setEnabled(on);
+  if (on) {
+    ui->approxOutputPowerValueLabel->setValueAndUnits(p, "W");
+  } else {
+    ui->approxOutputPowerValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setMaxPlateDissipationDisabled(
+  bool on,
+  double p
+) {
+  ui->calculatedMaxPlateDissipationLabel->setEnabled(on);
+  ui->calculatedMaxPlateDissipationValueLabel->setEnabled(on);
+  if (on) {
+    ui->calculatedMaxPlateDissipationValueLabel->setValueAndUnits(p, "W");
+  } else {
+    ui->calculatedMaxPlateDissipationValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setMaxScreenDissipationDisabled(
+  bool on,
+  double p
+) {
+  ui->calculatedMaxScreenDissipationValueLabel->setEnabled(on);
+  ui->calculatedMaxScreenDissipationValueLabel->setEnabled(on);
+  if (on) {
+    ui->calculatedMaxScreenDissipationValueLabel->setValueAndUnits(p, "W");
+  } else {
+    ui->calculatedMaxScreenDissipationValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setSelfBiasRawResistanceDisabled(
+  bool on,
+  double r,
+  QString units
+) {
+  ui->selfBiasResistanceLabel->setEnabled(on);
+  ui->selfBiasResistanceValueLabel->setEnabled(on);
+  if (on) {
+    ui->selfBiasResistanceValueLabel->setValueAndUnits(r, units);
+  } else {
+    ui->selfBiasResistanceValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::savePlot() {
+  QString save_path = QFileDialog::getSaveFileName(
+    this,
+    "Save As",
+    m_config.currentParameters().last_plot_save_dir + "/plot.png",
+    "PNG (*.png)"
+  );
+  const bool path_given = (!save_path.isEmpty());
+  if ((path_given) && (!ui->plotWidget->savePng(save_path))) {
+    showStatus(QString("Failed to save PNG image: '") + save_path + "'!");
+  } else if (path_given){
+    showStatus(QString("Saved plot PNG: '") + save_path + "'!");
+    QString save_dir = QFileInfo(save_path).absolutePath();
+    m_config.updateLastPlotSaveDir(save_dir);
+  }
 }

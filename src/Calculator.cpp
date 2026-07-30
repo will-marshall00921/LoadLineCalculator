@@ -276,6 +276,12 @@ void Calculator::calculateBiasIntersection() {
       + QString::number(m_calculated_bias_ia)
       + " mA"
   );
+  // calculating the self-bias resistor
+  double raw_self_bias_resistance_kohms = (
+    std::abs(m_bias) 
+      / m_calculated_bias_ia
+  );
+  emit selfBiasRawResistance(raw_self_bias_resistance_kohms*1E3, QString::fromStdWString(L"Ω"));
 }
 
 void Calculator::calculateIORange() {
@@ -344,6 +350,14 @@ void Calculator::calculateIORange() {
       + QString::number(m_calculated_output_max_ia)
       + "]"
   );
+  if (m_mode == Mode::Reactive) {
+    const double approx_output_power = (
+      (m_plate_supply - m_calculated_output_min_va)
+        * (m_calculated_output_max_ia * 0.001) 
+        * 0.5
+    );
+    emit approximatedOutputPower(approx_output_power);
+  }
 }
 
 bool Calculator::canCalculateLoadLine() const noexcept {

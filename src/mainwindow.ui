@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1148</width>
-    <height>472</height>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
        <bool>true</bool>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -58,7 +58,7 @@
          <x>0</x>
          <y>0</y>
          <width>388</width>
-         <height>491</height>
+         <height>544</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
@@ -286,7 +286,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Quiescient Cathode Current:</string>
+           <string>Quiescient Plate Current:</string>
           </property>
          </widget>
         </item>
@@ -300,14 +300,14 @@
           </property>
          </widget>
         </item>
-        <item row="21" column="0" colspan="2">
+        <item row="24" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine10">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="22" column="0">
+        <item row="25" column="0">
          <widget class="QLabel" name="approxOutputPowerLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -317,7 +317,7 @@
           </property>
          </widget>
         </item>
-        <item row="22" column="1">
+        <item row="25" column="1">
          <widget class="ValueLabel" name="approxOutputPowerValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -327,7 +327,7 @@
           </property>
          </widget>
         </item>
-        <item row="23" column="0">
+        <item row="26" column="0">
          <widget class="QLabel" name="calculatedMaxPlateDissipationLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -337,7 +337,7 @@
           </property>
          </widget>
         </item>
-        <item row="23" column="1">
+        <item row="26" column="1">
          <widget class="ValueLabel" name="calculatedMaxPlateDissipationValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -347,7 +347,7 @@
           </property>
          </widget>
         </item>
-        <item row="24" column="0">
+        <item row="27" column="0">
          <widget class="QLabel" name="calculatedMaxScreenDissipationLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -357,7 +357,7 @@
           </property>
          </widget>
         </item>
-        <item row="24" column="1">
+        <item row="27" column="1">
          <widget class="ValueLabel" name="calculatedMaxScreenDissipationValueLabel">
           <property name="enabled">
            <bool>false</bool>
@@ -367,7 +367,7 @@
           </property>
          </widget>
         </item>
-        <item row="25" column="0" colspan="2">
+        <item row="28" column="0" colspan="2">
          <widget class="Line" name="loadLineVerticalDividerLine11">
           <property name="frameShadow">
            <enum>QFrame::Shadow::Plain</enum>
@@ -377,7 +377,7 @@
           </property>
          </widget>
         </item>
-        <item row="26" column="0" colspan="2">
+        <item row="29" column="0" colspan="2">
          <spacer name="loadLineVerticalSpacer">
           <property name="orientation">
            <enum>Qt::Orientation::Vertical</enum>
@@ -474,6 +474,53 @@
         </item>
         <item row="20" column="1">
          <widget class="IntValueLabel" name="biasPlateVoltageValueLabel">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="22" column="0">
+         <widget class="QLabel" name="selfBiasResistanceLabel">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Req. Self-Bias Resistance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="22" column="1">
+         <widget class="ValueLabel" name="selfBiasResistanceValueLabel">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item row="21" column="0" colspan="2">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="23" column="0">
+         <widget class="QLabel" name="standardSelfBiasResistanceLabel">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Nearest Standard Self-Bias Resistor:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="23" column="1">
+         <widget class="ValueLabel" name="standardSelfBiasResistanceValueLabel">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -893,6 +940,7 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -902,8 +950,102 @@
      <height>33</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSavePlot"/>
+    <addaction name="actionSaveCSV"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuTubes">
+    <property name="title">
+     <string>Tubes</string>
+    </property>
+    <addaction name="actionCreateTube"/>
+    <addaction name="separator"/>
+    <addaction name="actionReloadDirectory"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionMaximize"/>
+    <addaction name="actionMinimize"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTubes"/>
+   <addaction name="menuView"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSavePlot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/image_24_png</normaloff>:/icons/image_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Plot</string>
+   </property>
+  </action>
+  <action name="actionSaveCSV">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/save_as_24_png</normaloff>:/icons/save_as_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Save CSV</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/quit_24_png</normaloff>:/icons/quit_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionCreateTube">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Create Tube</string>
+   </property>
+  </action>
+  <action name="actionReloadDirectory">
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/reload_24_png</normaloff>:/icons/reload_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Reload Directory</string>
+   </property>
+  </action>
+  <action name="actionMaximize">
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/maximize_24_png</normaloff>:/icons/maximize_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Maximize</string>
+   </property>
+  </action>
+  <action name="actionMinimize">
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/minimize_24_png</normaloff>:/icons/minimize_24_png</iconset>
+   </property>
+   <property name="text">
+    <string>Minimize</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

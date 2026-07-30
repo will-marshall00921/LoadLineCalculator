@@ -11,6 +11,7 @@
 #include "TubeManager.hpp"
 #include "Config.hpp"
 #include "Calculator.hpp"
+#include <QtCore/QStringLiteral>
 
 namespace Ui {
   class MainWindow;
@@ -56,6 +57,47 @@ class MainWindow : public QMainWindow {
     void setupCalculator();
 
     Q_SLOT void showStatus(const QString& msg);
+
+    void setLoadLineLabelEnabled(bool on);
+    void setStageInputLabelEnabled(bool on);
+    void setStageOutputLabelEnabled(bool on);
+    void setCalculatedValuesLabelEnabled(bool on);
+    void setLoadLineModeEnabled(bool on);
+    void setLoadResistanceEnabled(bool on);
+    void setPlateSupplyVoltageEnabled(bool on);
+    void setGridBiasVoltageEnabled(bool on);
+    void setPeakToPeakInputEnabled(bool on);
+    void setPeakToPeakOutputDisabled(
+      bool on = false,
+      double v = 0.0
+    );
+    void setBiasPlateCurrentDisabled(
+      bool on = false,
+      double i = 0.0
+    );
+    void setBiasPlateVoltageDisabled(
+      bool on = false,
+      double v = 0.0
+    );
+    void setApproxOutputPowerDisabled(
+      bool on = false,
+      double p = 0.0
+    );
+    void setMaxPlateDissipationDisabled(
+      bool on = false,
+      double p = 0.0
+    );
+    void setMaxScreenDissipationDisabled(
+      bool on = false,
+      double p = 0.0
+    );
+    void setSelfBiasRawResistanceDisabled(
+      bool on = false,
+      double r = 0.0,
+      QString units = "\u03A9"
+    );
+
+    void savePlot();
 };
 
 #endif // MAINWINDOW_HPP
