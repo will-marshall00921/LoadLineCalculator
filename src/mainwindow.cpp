@@ -9,6 +9,7 @@
 #include <QtCore/QDebug>
 #endif // DEBUG_BUILD
 #include <QtWidgets/QFileDialog>
+#include "TubeDataDialog.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
   : QMainWindow { parent }
@@ -64,6 +65,12 @@ MainWindow::MainWindow(QWidget* parent)
     &QAction::triggered,
     this,
     &MainWindow::close
+  );
+  QObject::connect(
+    ui->actionCreateTube,
+    &QAction::triggered,
+    this,
+    &MainWindow::createTube
   );
   m_config.parseTubeDirectory();
 }
@@ -617,4 +624,19 @@ void MainWindow::savePlot() {
     QString save_dir = QFileInfo(save_path).absolutePath();
     m_config.updateLastPlotSaveDir(save_dir);
   }
+}
+
+void MainWindow::createTube() {
+  TubeDataDialog* tubeDialog = new TubeDataDialog(this);
+  tubeDialog->setModal(true);
+  tubeDialog->setTubeDirectory(
+    m_config.currentParameters().tube_directory
+  );
+  QObject::connect(
+    tubeDialog,
+    &TubeDataDialog::statusMessage,
+    this,
+    &MainWindow::showStatus
+  );
+  tubeDialog->exec();
 }

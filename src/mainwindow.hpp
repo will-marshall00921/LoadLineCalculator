@@ -98,6 +98,8 @@ class MainWindow : public QMainWindow {
     );
 
     void savePlot();
+
+    Q_SLOT void createTube();
 };
 
 #endif // MAINWINDOW_HPP

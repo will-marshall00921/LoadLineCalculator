@@ -14,16 +14,16 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   , spinBox { nullptr }
   , comboBox { nullptr }
   , m_scaled_value { 0. }
-  , m_raw_value { 0 }
+  , m_raw_value { 0. }
   , m_scaling { 0 }
   , m_units_text { "--" }
   {
   m_horizontalLayout = new QHBoxLayout(this);
   m_horizontalLayout->setObjectName("horizontalLayout");
-  spinBox = new QSpinBox(this);
+  spinBox = new QDoubleSpinBox(this);
   spinBox->setObjectName("spinBox");
   spinBox->setMinimum(0);
-  spinBox->setMaximum(9999);
+  spinBox->setMaximum(999.99);
   QSizePolicy spinBoxSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
   spinBoxSizePolicy.setHorizontalStretch(0);
   spinBoxSizePolicy.setVerticalStretch(0);
@@ -35,6 +35,8 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   m_horizontalLayout->addWidget(spinBox);
   comboBox = new QComboBox(this);
   comboBox->setObjectName("comboBox");
+  m_scales.append(1.E-9);
+  m_prefixes.append('p');
   m_scales.append(1.E-3);
   m_prefixes.append('m');
   comboBox->addItem(QString("m")+m_units_text);
@@ -58,8 +60,8 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
 
   QObject::connect(
     spinBox,
-    &QSpinBox::valueChanged,
-    [this](int x) {
+    &QDoubleSpinBox::valueChanged,
+    [this](double x) {
       this->updateValue(x, m_scaling);
     }
   );
@@ -84,7 +86,7 @@ ScalableSpinBoxValue::~ScalableSpinBoxValue() noexcept {
   }
 }
 
-int ScalableSpinBoxValue::currentRawValue() const noexcept {
+double ScalableSpinBoxValue::currentRawValue() const noexcept {
   return m_raw_value;
 }
 
@@ -100,9 +102,9 @@ double ScalableSpinBoxValue::currentScalingRatio() const noexcept {
   return m_scales[m_scaling];
 }
 
-int ScalableSpinBoxValue::setRawValue(int x) {
+double ScalableSpinBoxValue::setRawValue(double x) {
   if (x == m_raw_value) { return m_raw_value; }
-  int retval = m_raw_value;
+  double retval = m_raw_value;
   updateValue(x, m_scaling);
   QSignalBlocker spinBoxBlocker(spinBox);
   spinBox->setValue(x);
@@ -140,7 +142,7 @@ void ScalableSpinBoxValue::enablePlaceholder() {
   spinBox->setSpecialValueText("--");
 }
 
-void ScalableSpinBoxValue::updateValue(int rawValue, int scaleIndex) {
+void ScalableSpinBoxValue::updateValue(double rawValue, int scaleIndex) {
   if (rawValue != m_raw_value) { 
     m_raw_value = rawValue; 
     emit rawValueChanged(m_raw_value);
@@ -155,7 +157,7 @@ void ScalableSpinBoxValue::updateValue(int rawValue, int scaleIndex) {
     qDebug() << "[ScalableSpinBoxValue]{updateValue} New scale prefix: " << m_prefixes[m_scaling];
     #endif // DEBUG_BUILD
   }
-  const double new_scaled_value = static_cast<double>(m_raw_value) * m_scales[m_scaling];
+  const double new_scaled_value = (m_raw_value * m_scales[m_scaling]);
   if (m_scaled_value != new_scaled_value) {
     m_scaled_value = new_scaled_value;
     emit scaledValueChanged(m_scaled_value);

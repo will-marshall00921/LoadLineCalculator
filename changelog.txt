@@ -1,3 +1,14 @@
+#### VERSION 0.4.0, August 3, 2026
+
+  Changes:
+    - Added the 'pico' prefix to the spin box selections for units
+    - Changed many spin box selections to be of the floating point type instead of
+      an integer type
+
+  Added Features:
+    - Added a dialog to easily create new tubes, currently does not support adding
+      transfer curves to the created file
+
 #### VERSION 0.3.1, July 30, 2026
 
   Changes:

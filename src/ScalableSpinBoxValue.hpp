@@ -16,7 +16,7 @@ class ScalableSpinBoxValue : public QWidget {
   Q_OBJECT
 
   double m_scaled_value;
-  int m_raw_value;
+  double m_raw_value;
   int m_scaling;
   QString m_units_text;
   QList<double> m_scales;
@@ -25,30 +25,30 @@ class ScalableSpinBoxValue : public QWidget {
   QHBoxLayout* m_horizontalLayout;
 
   public:
-    QSpinBox* spinBox;
+    QDoubleSpinBox* spinBox;
     QComboBox* comboBox;
 
     ScalableSpinBoxValue(QWidget* parent = nullptr);
 
     ~ScalableSpinBoxValue() noexcept;
 
-    int currentRawValue() const noexcept;
+    double currentRawValue() const noexcept;
     double currentScaledValue() const noexcept;
     QString currentUnitsText() const noexcept;
     double currentScalingRatio() const noexcept;
 
     Q_SIGNAL void scalingRatioChanged(double scale);
-    Q_SIGNAL void rawValueChanged(int rawValue);
+    Q_SIGNAL void rawValueChanged(double rawValue);
     Q_SIGNAL void scaledValueChanged(double scaledValue);
     Q_SIGNAL void unitsTextChanged(QString units);
 
-    Q_SLOT int setRawValue(int x);
+    Q_SLOT double setRawValue(double x);
     Q_SLOT QString setUnitsText(const QString& units);
     Q_SLOT int setScaleIndex(int index);
     Q_SLOT void enablePlaceholder();
 
   private:
-    void updateValue(int rawValue, int scaleIndex);
+    void updateValue(double rawValue, int scaleIndex);
 };
 
 #endif // SCALABLESPINBOXVALUE_HPP

@@ -56,7 +56,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-45</y>
          <width>388</width>
          <height>544</height>
         </rect>
@@ -566,7 +566,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-28</y>
          <width>288</width>
          <height>448</height>
         </rect>
@@ -1013,7 +1013,7 @@
   </action>
   <action name="actionCreateTube">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Create Tube</string>
