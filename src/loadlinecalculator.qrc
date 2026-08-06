@@ -8,7 +8,9 @@
     <file alias="llc_256_png">resources/png/llc_256.png</file>
   </qresource>
   <qresource prefix="icons">
-    <file alias="open_folder_24.png">resources/png/icons/open_folder_24.png</file>
+    <file alias="plus_24_png">resources/png/icons/plus_24.png</file>
+    <file alias="question_mark_24_png">resources/png/icons/question_mark_24.png</file>
+    <file alias="open_folder_24_png">resources/png/icons/open_folder_24.png</file>
     <file alias="add_file_24_png">resources/png/icons/add_file_24.png</file>
     <file alias="maximize_24_png">resources/png/icons/maximize_24.png</file>
     <file alias="minimize_24_png">resources/png/icons/minimize_24.png</file>

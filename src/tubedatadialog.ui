@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>800</width>
     <height>648</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
+    <width>800</width>
     <height>200</height>
    </size>
   </property>
@@ -32,8 +32,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-24</y>
-        <width>489</width>
+        <y>-30</y>
+        <width>689</width>
         <height>660</height>
        </rect>
       </property>
@@ -693,6 +693,17 @@
            </property>
            <property name="text">
             <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="csvHelpButton">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="loadlinecalculator.qrc">
+             <normaloff>:/icons/question_mark_24_png</normaloff>:/icons/question_mark_24_png</iconset>
            </property>
           </widget>
          </item>

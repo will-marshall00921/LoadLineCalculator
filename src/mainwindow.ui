@@ -1016,6 +1016,10 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/plus_24_png</normaloff>:/icons/plus_24_png</iconset>
+   </property>
    <property name="text">
     <string>Create Tube</string>
    </property>
@@ -1050,7 +1054,7 @@
   <action name="actionBrowseTubes">
    <property name="icon">
     <iconset resource="loadlinecalculator.qrc">
-     <normaloff>:/icons/open_folder_24.png</normaloff>:/icons/open_folder_24.png</iconset>
+     <normaloff>:/icons/open_folder_24_png</normaloff>:/icons/open_folder_24_png</iconset>
    </property>
    <property name="text">
     <string>Browse Tubes</string>

@@ -109,6 +109,8 @@ class TubeDataDialog : public QDialog {
     Q_SLOT void saveTubeFile();
 
     void loadTransferCurveCSV(const QString& path);
+
+    Q_SLOT void showCSVHelp();
 };
 
 #endif // TUBEDATADIALOG_HPP

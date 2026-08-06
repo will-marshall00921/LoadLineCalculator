@@ -246,6 +246,12 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
     this,
     &TubeDataDialog::setTransferCurveCSVPathEnabled
   );
+  QObject::connect(
+    ui->csvHelpButton,
+    &QToolButton::clicked,
+    this,
+    &TubeDataDialog::showCSVHelp
+  );
   // QObject::connect(
   //   ui->buttonBox,
   //   &QDialogButtonBox::accepted,

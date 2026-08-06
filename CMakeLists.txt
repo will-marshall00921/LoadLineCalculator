@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
 project (LoadLineCalculator
-  VERSION 0.5.0
+  VERSION 0.5.1
   LANGUAGES CXX
 )
 
@@ -34,6 +34,7 @@ set(LoadLineCalculator_SOURCES
   "${LoadLineCalculator_SOURCE_DIR}/mainwindow.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/ScalableSpinBoxValue.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/TubeDataDialog.cpp"
+  "${LoadLineCalculator_SOURCE_DIR}/TubeDataDialog.showCSVHelp.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/TubeHeaterInfo.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/TubeInfoEntry.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/TubeManager.cpp"
@@ -55,6 +56,7 @@ set(LoadLineCalculator_HEADERS
   "${CMAKE_SOURCE_DIR}/qcustomplot/qcustomplot.h"
 )
 set(LoadLineCalculator_UI_SOURCES
+  "${LoadLineCalculator_SOURCE_DIR}/csvhelp.ui"
   "${LoadLineCalculator_SOURCE_DIR}/mainwindow.ui"
   "${LoadLineCalculator_SOURCE_DIR}/tubedatadialog.ui"
   "${LoadLineCalculator_SOURCE_DIR}/loadlinecalculator.qrc"

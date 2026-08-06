@@ -1,3 +1,11 @@
+#### VERSION 0.5.1, August 6, 2026
+  Changes:
+    - Created a button within the tube creation dialog to show the CSV help 
+      dialog
+
+  Added Features:
+    - Created a new dialog within the tube creation dialog to explain the CSV 
+      format.
 #### VERSION 0.5.0, August 5, 2026
 
   Changes:
