@@ -6,6 +6,10 @@
 #define TUBEDATADIALOG_HPP
 
 #include <QtWidgets/QDialog>
+#include <QtCore/QString>
+#include <QtCore/QMap>
+#include <QtCore/QVector>
+#include <QtCore/QPair>
 
 namespace Ui {
   class TubeDataDialog;
@@ -46,6 +50,15 @@ class TubeDataDialog : public QDialog {
   bool m_min_heater_cathode_voltage_enabled;
   QString m_csv_path;
   bool m_csv_path_enabled;
+  QMap<
+    double,
+    QVector<
+      QPair<
+        double,
+        double
+      >
+    >
+  > m_transfer_curve_map;
 
   public:
     TubeDataDialog(QWidget* parent = nullptr);
@@ -94,6 +107,8 @@ class TubeDataDialog : public QDialog {
     Q_SLOT void setTransferCurveCSVPathEnabled(bool enabled);
 
     Q_SLOT void saveTubeFile();
+
+    void loadTransferCurveCSV(const QString& path);
 };
 
 #endif // TUBEDATADIALOG_HPP

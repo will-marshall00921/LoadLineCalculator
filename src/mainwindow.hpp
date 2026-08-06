@@ -100,6 +100,8 @@ class MainWindow : public QMainWindow {
     void savePlot();
 
     Q_SLOT void createTube();
+
+    Q_SLOT void openTubeDirectory();
 };
 
 #endif // MAINWINDOW_HPP

@@ -1,3 +1,15 @@
+#### VERSION 0.5.0, August 5, 2026
+
+  Changes:
+    - Added a combo box for selecting the units of the plate current values in 
+      the given CSV file in the tube creation dialog, currently disabled
+    
+  Added Features:
+    - Added the ability to add transfer curves to user made tubes, parsed from a
+      provided CSV file
+    - Added an action to open the directory currently set as the tube database
+      directory
+
 #### VERSION 0.4.0, August 3, 2026
 
   Changes:

@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
 project (LoadLineCalculator
-  VERSION 0.4.0
+  VERSION 0.5.0
   LANGUAGES CXX
 )
 
@@ -84,6 +84,7 @@ target_link_libraries(LoadLineCalculator
     Qt6::Core
     Qt6::Widgets
     Qt6::PrintSupport
+    Qt6::Gui
 )
 target_include_directories(LoadLineCalculator
   PRIVATE 

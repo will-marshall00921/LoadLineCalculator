@@ -56,7 +56,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-45</y>
+         <y>0</y>
          <width>388</width>
          <height>544</height>
         </rect>
@@ -566,7 +566,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-28</y>
+         <y>0</y>
          <width>288</width>
          <height>448</height>
         </rect>
@@ -964,6 +964,7 @@
      <string>Tubes</string>
     </property>
     <addaction name="actionCreateTube"/>
+    <addaction name="actionBrowseTubes"/>
     <addaction name="separator"/>
     <addaction name="actionReloadDirectory"/>
    </widget>
@@ -1046,8 +1047,23 @@
     <string>Minimize</string>
    </property>
   </action>
+  <action name="actionBrowseTubes">
+   <property name="icon">
+    <iconset resource="loadlinecalculator.qrc">
+     <normaloff>:/icons/open_folder_24.png</normaloff>:/icons/open_folder_24.png</iconset>
+   </property>
+   <property name="text">
+    <string>Browse Tubes</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>ScalableSpinBoxValue</class>
+   <extends>QWidget</extends>
+   <header>ScalableSpinBoxValue.hpp</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>ValueLabel</class>
    <extends>QLabel</extends>
@@ -1057,12 +1073,6 @@
    <class>IntValueLabel</class>
    <extends>QLabel</extends>
    <header>IntValueLabel.hpp</header>
-  </customwidget>
-  <customwidget>
-   <class>ScalableSpinBoxValue</class>
-   <extends>QWidget</extends>
-   <header>ScalableSpinBoxValue.hpp</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>

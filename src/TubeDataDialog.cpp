@@ -11,8 +11,15 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
+#include <QtCore/QJsonArray>
 #include <QtCore/QByteArray>
 #include <QtCore/QFile>
+#include <QtCore/QStringList>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#ifdef DEBUG_BUILD
+#include <QtCore/QDebug>
+#endif // DEBUG_BUILD
 
 TubeDataDialog::TubeDataDialog(QWidget* parent)
   : QDialog { parent }
@@ -533,8 +540,14 @@ void TubeDataDialog::setTransferCurveCSVPathEnabled(bool enabled) {
 }
 
 void TubeDataDialog::saveTubeFile() {
+  auto debugMessage = [](QString m) {
+    #ifdef DEBUG_BUILD
+    qDebug() << "[TubeDataDialog]{saveTubeFile} " << m;
+    #endif // DEBUG_BUILD
+  };
   QJsonObject tube_obj;
   if (m_tube_name.isEmpty()) {
+    debugMessage("Invalid tube! (Empty name)");
     return;
   }
   tube_obj.insert(
@@ -575,8 +588,10 @@ void TubeDataDialog::saveTubeFile() {
       || m_c_g_k_enabled
       || m_c_a_k_enabled
   ) {
+    debugMessage("Capacitance enabled!");
     QJsonObject cap_obj;
     if (m_c_g_a_enabled) {
+      debugMessage("Grid to plate capacitance enabled!");
       cap_obj.insert(
         "c_g1_a",
         QJsonValue::fromVariant(m_c_g_a_pf)
@@ -587,6 +602,7 @@ void TubeDataDialog::saveTubeFile() {
       );
     }
     if (m_c_g_k_enabled) {
+      debugMessage("Grid to cathode capacitance enabled!");
       cap_obj.insert(
         "c_g1_k",
         QJsonValue::fromVariant(m_c_g_k_pf)
@@ -597,6 +613,7 @@ void TubeDataDialog::saveTubeFile() {
       );
     }
     if (m_c_a_k_enabled) {
+      debugMessage("Plate to cathode capacitance enabled!");
       cap_obj.insert(
         "c_a_k",
         QJsonValue::fromVariant(m_c_a_k_pf)
@@ -621,6 +638,7 @@ void TubeDataDialog::saveTubeFile() {
     QJsonValue::fromVariant(QString("V"))
   );
   if (m_max_screen_voltage_enabled) {
+    debugMessage("Max screen voltage enabled!");
     ratings_obj.insert(
       "max_v_g2_k",
       QJsonValue::fromVariant(m_max_screen_voltage_v)
@@ -631,6 +649,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_max_grid_voltage_enabled) {
+    debugMessage("Max grid voltage enabled!");
     ratings_obj.insert(
       "max_v_g1_k",
       QJsonValue::fromVariant(m_max_grid_voltage_v)
@@ -641,6 +660,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_min_grid_voltage_enabled) {
+    debugMessage("Min grid voltage enabled!");
     ratings_obj.insert(
       "min_v_g1_k",
       QJsonValue::fromVariant(m_min_grid_voltage_v)
@@ -651,6 +671,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_max_plate_power_enabled) {
+    debugMessage("Max plate power dissipation enabled!");
     ratings_obj.insert(
       "max_p_a",
       QJsonValue::fromVariant(m_max_plate_power_w)
@@ -661,6 +682,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_max_screen_power_enabled) {
+    debugMessage("Max screen power dissipation enabled!");
     ratings_obj.insert(
       "max_p_g2",
       QJsonValue::fromVariant(m_max_screen_power_w)
@@ -671,6 +693,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_max_heater_cathode_voltage_enabled) {
+    debugMessage("Max heater-to-cathode voltage enabled!");
     ratings_obj.insert(
       "max_v_k",
       QJsonValue::fromVariant(m_max_heater_cathode_voltage_v)
@@ -681,6 +704,7 @@ void TubeDataDialog::saveTubeFile() {
     );
   }
   if (m_min_heater_cathode_voltage_enabled) {
+    debugMessage("Min heater-to-cathode voltage enabled!");
     ratings_obj.insert(
       "min_v_k",
       QJsonValue::fromVariant(m_min_heater_cathode_voltage_v)
@@ -694,6 +718,65 @@ void TubeDataDialog::saveTubeFile() {
     "ratings",
     QJsonValue::fromVariant(ratings_obj)
   );
+  if (m_csv_path_enabled) {
+    debugMessage(QString("CSV to load: '") + m_csv_path + "'");
+    loadTransferCurveCSV(m_csv_path);
+    if (m_transfer_curve_map.isEmpty()) {
+      emit statusMessage(QString("Failed to load data from CSV: '") + m_csv_path + "'");
+      return;
+    }
+    QJsonArray curvesArray;
+    QMapIterator<double, QVector<QPair<double, double>>> it(m_transfer_curve_map);
+    while (it.hasNext()) {
+      it.next();
+      QJsonArray voltages_v;
+      QJsonArray currents_ma;
+      const QVector<QPair<double, double>>& xyValues = it.value();
+      if (xyValues.isEmpty()) { continue; }
+      for (const QPair<double, double>& xyPair : xyValues) {
+        voltages_v.append(xyPair.first);
+        currents_ma.append(xyPair.second);
+      }
+      QJsonObject curveObject;
+      curveObject.insert(
+        "grid_voltage",
+        QJsonValue::fromVariant(it.key())
+      );
+      curveObject.insert(
+        "point_count", 
+        QJsonValue::fromVariant(QString::number(voltages_v.size()))
+      );
+      curveObject.insert(
+        "plate_voltages",
+        QJsonValue::fromVariant(voltages_v)
+      );
+      curveObject.insert(
+        "plate_currents",
+        QJsonValue::fromVariant(currents_ma)
+      );
+      curvesArray.append(QJsonValue::fromVariant(curveObject));
+    }
+    if (!curvesArray.isEmpty()) {
+      debugMessage(QString("Curve count: ") + QString::number(curvesArray.size()));
+      QJsonObject curvesObject;
+      curvesObject.insert(
+        "count",
+        QJsonValue::fromVariant(QString::number(curvesArray.size()))
+      );
+      curvesObject.insert(
+        "plate_current_units",
+        QJsonValue::fromVariant("mA")
+      );
+      curvesObject.insert(
+        "data",
+        QJsonValue::fromVariant(curvesArray)
+      );
+      tube_obj.insert(
+        "curves",
+        QJsonValue::fromVariant(curvesObject)
+      );
+    }
+  }
   QJsonDocument tube_doc(tube_obj);
   QByteArray tube_data = tube_doc.toJson();
   QString tube_path = (m_tube_dir + "/" + m_tube_name + ".json");
@@ -709,4 +792,82 @@ void TubeDataDialog::saveTubeFile() {
 void TubeDataDialog::accept() {
   saveTubeFile();
   QDialog::accept();
+}
+
+QVector<QStringList> readCSVLines(const QString& path) {
+  QVector<QStringList> outLines;
+  QFile inFile = QFile(path);
+  if (!inFile.open(QIODevice::ReadOnly)) {
+    return outLines;
+  }
+  QTextStream fileData(&inFile);
+  while (!fileData.atEnd()) {
+    QString line = fileData.readLine();
+    outLines.append(line.split(','));
+  }
+  inFile.close();
+  return outLines;
+}
+
+void TubeDataDialog::loadTransferCurveCSV(const QString& path) {
+  if (!m_transfer_curve_map.isEmpty()) {
+    m_transfer_curve_map.clear();
+    #ifdef DEBUG_BUILD
+    qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} Cleared transfer curve map!";
+    #endif // DEBUG_BUILD
+  }
+  QVector<QStringList> csvLines = readCSVLines(path);
+  if (csvLines.isEmpty()) {
+    #ifdef DEBUG_BUILD
+    qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: No lines parsed!";
+    #endif // DEBUG_BUILD
+    return;
+  }
+  for (const QStringList& lineStrings : csvLines) {
+    if (lineStrings.size() < 3) { 
+      #ifdef DEBUG_BUILD
+      qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: Skipping invalid line "
+               << lineStrings << " (invalid length)";
+      #endif // DEBUG_BUILD
+      continue; 
+    }
+    bool convertedOk = true;
+    double convertedValue = lineStrings.front()
+      .simplified()
+      .toDouble(&convertedOk);
+    if (!convertedOk) { 
+      #ifdef DEBUG_BUILD
+      qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: Skipping invalid line "
+               << lineStrings << " (invalid grid voltage)";
+      #endif // DEBUG_BUILD
+      continue; 
+    }
+    QPair<double, double> xyPair;
+    xyPair.first = lineStrings[1].simplified()
+      .toDouble(&convertedOk);
+    if (!convertedOk) { 
+      #ifdef DEBUG_BUILD
+      qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: Skipping invalid line "
+               << lineStrings << " (invalid plate voltage)";
+      #endif // DEBUG_BUILD
+      continue; 
+    }
+    xyPair.second = lineStrings[2].simplified()
+      .toDouble(&convertedOk);
+    if (!convertedOk) { 
+      #ifdef DEBUG_BUILD
+      qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: Skipping invalid line "
+               << lineStrings << " (invalid plate current)";
+      #endif // DEBUG_BUILD
+      continue; 
+    }
+    if (m_transfer_curve_map.contains(convertedValue)) {
+      m_transfer_curve_map[convertedValue].append(xyPair);
+    } else {
+      m_transfer_curve_map.insert(
+        convertedValue,
+        QVector({xyPair})
+      );
+    }
+  }
 }

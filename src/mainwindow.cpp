@@ -10,6 +10,7 @@
 #endif // DEBUG_BUILD
 #include <QtWidgets/QFileDialog>
 #include "TubeDataDialog.hpp"
+#include <QtGui/QDesktopServices>
 
 MainWindow::MainWindow(QWidget* parent)
   : QMainWindow { parent }
@@ -71,6 +72,12 @@ MainWindow::MainWindow(QWidget* parent)
     &QAction::triggered,
     this,
     &MainWindow::createTube
+  );
+  QObject::connect(
+    ui->actionBrowseTubes,
+    &QAction::triggered,
+    this,
+    &MainWindow::openTubeDirectory
   );
   m_config.parseTubeDirectory();
 }
@@ -639,4 +646,12 @@ void MainWindow::createTube() {
     &MainWindow::showStatus
   );
   tubeDialog->exec();
+}
+
+void MainWindow::openTubeDirectory() {
+  QDesktopServices::openUrl(
+    QUrl::fromLocalFile(
+      m_config.currentParameters().tube_directory
+    )
+  );
 }

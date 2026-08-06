@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-24</y>
         <width>489</width>
-        <height>632</height>
+        <height>660</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout">
@@ -689,7 +689,7 @@
          <item>
           <widget class="QCheckBox" name="csvPathCheckBox">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string/>
@@ -697,6 +697,39 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="28" column="0">
+        <widget class="QLabel" name="currentUnitsLabel">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Current Units:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="28" column="1">
+        <widget class="QComboBox" name="currentUnitsComboBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>mA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>
