@@ -7,6 +7,8 @@
 #ifdef DEBUG_BUILD
 #include <QtCore/QDebug>
 #endif // DEBUG_BUILD
+#include "eeutils.hpp"
+#include <exception>
 
 Calculator::Calculator()
   : QObject { nullptr }
@@ -281,6 +283,44 @@ void Calculator::calculateBiasIntersection() {
     std::abs(m_bias) 
       / m_calculated_bias_ia
   );
+  // determine the nearest standard E24 resistor
+  try {
+    auto valunits = to_nearest_series_value(
+      raw_self_bias_resistance_kohms,
+      Units::Kilo,
+      ESeries::E24,
+      nullptr,
+      nullptr
+    );
+    switch (valunits.second) {
+      case Units::Milli:
+        emit selfBiasStandardResistance(
+          valunits.first,
+          QString("m\u03A9")
+        );
+        break;
+      case Units::Kilo:
+        emit selfBiasStandardResistance(
+          valunits.first,
+          QString("k\u03A9")
+        );
+        break;
+      case Units::Mega:
+        emit selfBiasStandardResistance(
+          valunits.first,
+          QString("M\u03A9")
+        );
+        break;
+      default:
+        emit selfBiasStandardResistance(
+          valunits.first,
+          QString("\u03A9")
+        );
+        break;
+    }
+  } catch (std::exception& e) {
+    emit calculatorMessage(QString("Standard resistor calculation error: ") + e.what());
+  } 
   emit selfBiasRawResistance(raw_self_bias_resistance_kohms*1E3, QString::fromStdWString(L"Ω"));
 }
 
@@ -349,6 +389,21 @@ void Calculator::calculateIORange() {
       + ", "
       + QString::number(m_calculated_output_max_ia)
       + "]"
+  );
+  double va_at_max_pa = (
+    -1. 
+      * m_calculated_ll_intercept 
+      / (2 * m_calculated_ll_slope)
+  );
+  if (va_at_max_pa < m_calculated_output_min_va) {
+    va_at_max_pa = m_calculated_output_min_va;
+  } else if (va_at_max_pa > m_calculated_output_max_va) {
+    va_at_max_pa = m_calculated_output_max_va;
+  }
+  emit calculatedMaxPlateDissipation(
+    ((m_calculated_ll_slope * va_at_max_pa) + m_calculated_ll_intercept)
+      * va_at_max_pa
+      / 1E3
   );
   if (m_mode == Mode::Reactive) {
     const double approx_output_power = (

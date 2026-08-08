@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
 project (LoadLineCalculator
-  VERSION 0.5.1
+  VERSION 0.6.0
   LANGUAGES CXX
 )
 
@@ -27,6 +27,7 @@ set(LoadLineCalculator_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LoadLineCalculator_SOURCES
   "${LoadLineCalculator_SOURCE_DIR}/Calculator.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/Config.cpp"
+  "${LoadLineCalculator_SOURCE_DIR}/eeutils.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/InterelectrodeCapacitances.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/InterpolatedCurve.cpp"
   "${LoadLineCalculator_SOURCE_DIR}/IVCurve.cpp"
@@ -45,6 +46,7 @@ set(LoadLineCalculator_HEADERS
   "${LoadLineCalculator_SOURCE_DIR}/BaseValueLabel.hpp"
   "${LoadLineCalculator_SOURCE_DIR}/Calculator.hpp"
   "${LoadLineCalculator_SOURCE_DIR}/Config.hpp"
+  "${LoadLineCalculator_SOURCE_DIR}/eeutils.hpp"
   "${LoadLineCalculator_SOURCE_DIR}/InterpolatedCurve.hpp"
   "${LoadLineCalculator_SOURCE_DIR}/IntValueLabel.hpp"
   "${LoadLineCalculator_SOURCE_DIR}/IVCurve.hpp"

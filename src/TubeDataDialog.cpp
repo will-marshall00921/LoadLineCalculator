@@ -60,17 +60,14 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
   );
 
   ui->heaterVoltageScalableSpinBox->setUnitsText("V");
-  ui->heaterVoltageScalableSpinBox->setScaleIndex(2);
+  ui->heaterVoltageScalableSpinBox->setScaleIndex(2); // set to V
   ui->heaterCurrentScalableSpinBox->setUnitsText("A");
-  ui->heaterCurrentScalableSpinBox->setScaleIndex(2);
+  ui->heaterCurrentScalableSpinBox->setScaleIndex(1); // set to mA
   ui->gridToPlateCapacitanceScalableSpinBox->setUnitsText("F");
-  ui->gridToPlateCapacitanceScalableSpinBox->setScaleIndex(0); // set to pF
   ui->gridToPlateCapacitanceScalableSpinBox->enablePlaceholder();
   ui->gridToCathodeCapacitanceScalableSpinBox->setUnitsText("F");
-  ui->gridToCathodeCapacitanceScalableSpinBox->setScaleIndex(0); // set to pF
   ui->gridToCathodeCapacitanceScalableSpinBox->enablePlaceholder();
   ui->plateToCathodeCapacitanceScalableSpinBox->setUnitsText("F");
-  ui->plateToCathodeCapacitanceScalableSpinBox->setScaleIndex(0); // set to pF
   ui->plateToCathodeCapacitanceScalableSpinBox->enablePlaceholder();
   QObject::connect(
     ui->nameLineEdit,
@@ -324,11 +321,15 @@ double TubeDataDialog::setGridToPlateCapacitance(double c) {
 void toggleEnabled(
   QLabel* label,
   ScalableSpinBoxValue* scalableSpinBox,
-  bool enabled
+  bool enabled,
+  int defaultIndex = 0
 ) {
   label->setEnabled(enabled);
   scalableSpinBox->setEnabled(enabled);
   if (!enabled) { scalableSpinBox->enablePlaceholder(); }
+  else {
+    scalableSpinBox->setScaleIndex(defaultIndex);
+  }
 }
 
 void toggleEnabled(
@@ -365,7 +366,8 @@ void TubeDataDialog::setGridToPlateCapacitanceEnabled(bool enabled) {
   toggleEnabled(
     ui->gridToPlateCapacitanceLabel,
     ui->gridToPlateCapacitanceScalableSpinBox,
-    enabled
+    enabled,
+    0
   );
   m_c_g_a_enabled = enabled;
 }
@@ -380,7 +382,8 @@ void TubeDataDialog::setGridToCathodeCapacitanceEnabled(bool enabled) {
   toggleEnabled(
     ui->gridToCathodeCapacitanceLabel,
     ui->gridToCathodeCapacitanceScalableSpinBox,
-    enabled
+    enabled,
+    0
   );
   m_c_g_k_enabled = enabled;
 }
@@ -395,7 +398,8 @@ void TubeDataDialog::setPlateToCathodeCapacitanceEnabled(bool enabled) {
   toggleEnabled(
     ui->plateToCathodeCapacitanceLabel,
     ui->plateToCathodeCapacitanceScalableSpinBox,
-    enabled
+    enabled,
+    0
   );
   m_c_a_k_enabled = enabled;
 }

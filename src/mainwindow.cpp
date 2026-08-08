@@ -231,7 +231,7 @@ void MainWindow::setupTubeManager() {
       ui->loadResistanceScalableSpinBox->setEnabled(true);
       QSignalBlocker scalableSpinBoxBlocker(ui->loadResistanceScalableSpinBox);
       ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
-      ui->loadResistanceScalableSpinBox->setScaleIndex(1);
+      ui->loadResistanceScalableSpinBox->setScaleIndex(3);
       ui->loadLineLabel->setEnabled(true);
       ui->calculatedValuesLabel->setEnabled(true);
       ui->loadLineModeLabel->setEnabled(true);
@@ -280,6 +280,9 @@ void MainWindow::setupTubeManager() {
       setLoadLineModeEnabled(false);
       ui->actionSavePlot->setEnabled(false);
       setSelfBiasRawResistanceDisabled();
+      setSelfBiasStandardResistanceDisabled();
+      setApproxOutputPowerDisabled();
+      setMaxPlateDissipationDisabled();
     }
   );
 }
@@ -415,8 +418,7 @@ void MainWindow::setupCalculator() {
         "V"
       );
       ui->biasPlateVoltageValueLabel->setEnabled(true);
-      ui->stageInputPeakToPeakLabel->setEnabled(true);
-      ui->stageInputPeakToPeakSpinBox->setEnabled(true);
+      setPeakToPeakInputEnabled(true);
     }
   );
   QObject::connect(
@@ -437,11 +439,7 @@ void MainWindow::setupCalculator() {
       ui->stageOutputPeakToPeakLabel->setEnabled(true);
       try {
         const double io_domain = (x.value(1) - x.value(0));
-        ui->stageOutputPeakToPeakValueLabel->setValueAndUnits(
-          io_domain,
-          "V"
-        );
-        ui->stageOutputPeakToPeakValueLabel->setEnabled(true);
+        setPeakToPeakOutputDisabled(true, io_domain);
       } catch (std::exception& e) {
         showStatus(
           QString("Encountered an error plotting the input range: ")
@@ -457,6 +455,30 @@ void MainWindow::setupCalculator() {
     this,
     [this](double r, const QString& units) {
       setSelfBiasRawResistanceDisabled(true, r, units); 
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::selfBiasStandardResistance,
+    this,
+    [this](double r, const QString& units) {
+      setSelfBiasStandardResistanceDisabled(true, r, units);
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::approximatedOutputPower,
+    this,
+    [this](double p) {
+      setApproxOutputPowerDisabled(true, p);
+    }
+  );
+  QObject::connect(
+    m_calculator,
+    &Calculator::calculatedMaxPlateDissipation,
+    this,
+    [this](double p) {
+      setMaxPlateDissipationDisabled(true, p);
     }
   );
   QObject::connect(
@@ -521,6 +543,8 @@ void MainWindow::setPeakToPeakInputEnabled(bool on) {
   if (!on) {
     QSignalBlocker spinBoxBlocker(ui->stageInputPeakToPeakSpinBox);
     ui->stageInputPeakToPeakSpinBox->setValue(ui->stageInputPeakToPeakSpinBox->minimum());
+  } else {
+    setStageInputLabelEnabled(on);
   }
 }
 
@@ -532,6 +556,7 @@ void MainWindow::setPeakToPeakOutputDisabled(
   ui->stageOutputPeakToPeakValueLabel->setEnabled(on);
   if (on) {
     ui->stageOutputPeakToPeakValueLabel->setValueAndUnits(v, "V");
+    setStageOutputLabelEnabled(on);
   } else {
     ui->stageOutputPeakToPeakValueLabel->setPlaceholderEnabled(!on);
   }
@@ -613,6 +638,20 @@ void MainWindow::setSelfBiasRawResistanceDisabled(
     ui->selfBiasResistanceValueLabel->setValueAndUnits(r, units);
   } else {
     ui->selfBiasResistanceValueLabel->setPlaceholderEnabled(!on);
+  }
+}
+
+void MainWindow::setSelfBiasStandardResistanceDisabled(
+  bool on,
+  double r,
+  QString units
+) {
+  ui->standardSelfBiasResistanceLabel->setEnabled(on);
+  ui->standardSelfBiasResistanceValueLabel->setEnabled(on);
+  if (on) {
+    ui->standardSelfBiasResistanceValueLabel->setValueAndUnits(r, units);
+  } else {
+    ui->standardSelfBiasResistanceValueLabel->setPlaceholderEnabled(!on);
   }
 }
 

@@ -1,3 +1,15 @@
+#### VERSION 0.6.0, August 7, 2026
+  Changes:
+    - Changed the "Nearest Standard Self-Bias Resistance" label to "Nearest E24
+      Self-Bias Resistor"
+    - Changed all units drop down menus to display a placeholder when disabled
+  
+  Added Features:
+    - Nearest E24 series standard resistor calculation for the self-bias resistor
+
+  Bugfixes:
+    - Prevented the load resistance from defaulting to pico-ohms
+
 #### VERSION 0.5.1, August 6, 2026
   Changes:
     - Created a button within the tube creation dialog to show the CSV help 

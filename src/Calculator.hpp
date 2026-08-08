@@ -57,6 +57,7 @@ class Calculator : public QObject {
     );
 
     Q_SIGNAL void approximatedOutputPower(double p);
+    Q_SIGNAL void calculatedMaxPlateDissipation(double p);
     Q_SIGNAL void selfBiasRawResistance(double r, QString units);
     Q_SIGNAL void selfBiasStandardResistance(double r, QString units);
     

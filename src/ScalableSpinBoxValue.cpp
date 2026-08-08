@@ -15,7 +15,7 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   , comboBox { nullptr }
   , m_scaled_value { 0. }
   , m_raw_value { 0. }
-  , m_scaling { 0 }
+  , m_scaling { -1 }
   , m_units_text { "--" }
   {
   m_horizontalLayout = new QHBoxLayout(this);
@@ -35,6 +35,7 @@ ScalableSpinBoxValue::ScalableSpinBoxValue(QWidget* parent)
   m_horizontalLayout->addWidget(spinBox);
   comboBox = new QComboBox(this);
   comboBox->setObjectName("comboBox");
+  comboBox->setPlaceholderText("--");
   m_scales.append(1.E-9);
   m_prefixes.append('p');
   m_scales.append(1.E-3);
@@ -139,6 +140,7 @@ void ScalableSpinBoxValue::enablePlaceholder() {
   QSignalBlocker comboBoxBlocker(comboBox);
   QSignalBlocker spinBoxBlocker(spinBox);
   comboBox->setPlaceholderText("--");
+  comboBox->setCurrentIndex(-1);
   spinBox->setSpecialValueText("--");
 }
 

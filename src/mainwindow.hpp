@@ -96,6 +96,11 @@ class MainWindow : public QMainWindow {
       double r = 0.0,
       QString units = "\u03A9"
     );
+    void setSelfBiasStandardResistanceDisabled(
+      bool on = false,
+      double r = 0.0,
+      QString units = "\u03A9"
+    );
 
     void savePlot();
 
