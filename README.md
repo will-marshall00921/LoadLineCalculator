@@ -11,7 +11,22 @@ tube models.
 ## Tube Files
 
 Tube files are by default installed to the `%APPDATA%/Roaming/LoadLineCalculator/tubes`
-directory. The tube files are stored in the JSON format to allow for the user to
+directory. The tubes given below are included with the program.
+
+Tube  | Type            | Filename(s)
+------|-----------------|------------
+12AT7 | Triode          | `12AT7.json`
+12AU7 | Triode          | `12AU7.json`
+12AX7 | Triode          | `12AX7.json`
+12AY7 | Triode          | `12AY7.json`
+5881  | Pentode         | `5881.json`
+6BQ5  | Pentode         | `6BQ5.json`
+6J6   | Triode          | `6J6.json`
+6V6   | Pentode         | `6V6.json`
+7199  | Triode, Pentode | `7199 Triode.json`, `7199 Pentode.json`
+KT88  | Pentode         | `KT88.json`
+
+The tube files are stored in the JSON format to allow for the user to
 easily add their own tubes. The top level JSON keys are given below.
 
 Key            | Type   | Description

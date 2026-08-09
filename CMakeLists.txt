@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
 project (LoadLineCalculator
-  VERSION 0.6.0
+  VERSION 0.6.1
   LANGUAGES CXX
 )
 

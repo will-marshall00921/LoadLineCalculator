@@ -27,7 +27,7 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
   , m_tube_type { 0 }
   , m_heater_voltage_v { 0. }
   , m_heater_current { 0. }
-  , m_heater_current_units { "A" }
+  , m_heater_current_units { "mA" }
   , m_c_g_a_pf { 0. }
   , m_c_g_a_enabled { false }
   , m_c_g_k_pf { 0. }
@@ -91,7 +91,9 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
     ui->heaterCurrentScalableSpinBox,
     &ScalableSpinBoxValue::scaledValueChanged,
     this,
-    &TubeDataDialog::setHeaterCurrent
+    [this](double x) {
+      setHeaterCurrent(x / ui->heaterCurrentScalableSpinBox->currentScalingRatio());
+    }
   );
   QObject::connect(
     ui->heaterCurrentScalableSpinBox,
@@ -309,6 +311,8 @@ void TubeDataDialog::setHeaterCurrentUnits(double scale) {
     m_heater_current_units = "kA";
   } else if (scale == 1E-9) {
     m_heater_current_units = "pA";
+  } else if (scale == 1E6) {
+    m_heater_current_units = "MA";
   }
 }
 

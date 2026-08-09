@@ -1,3 +1,15 @@
+#### VERSION 0.6.1, August 9, 2026
+  Added Tubes:
+    - 12AY7
+    - 6BQ5
+    - KT88
+
+  Bugfixes:
+    - Fixed a bug causing the tube creation dialog to show an initial heater current
+      units of "mA" but store an initial units of "A"
+    - Fixed the bug causing the maximum heater to cathode voltage to be limited to
+      99 V in the tube creation dialog
+
 #### VERSION 0.6.0, August 7, 2026
   Changes:
     - Changed the "Nearest Standard Self-Bias Resistance" label to "Nearest E24

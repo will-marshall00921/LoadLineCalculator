@@ -1,0 +1,32 @@
+{
+    "capacitances": {
+        "c_a_k": 0.6,
+        "c_a_k_units": "pF",
+        "c_g1_a": 1.3,
+        "c_g1_a_units": "pF",
+        "c_g1_k": 1.3,
+        "c_g1_k_units": "pF"
+    },
+    "heater": {
+        "i_parallel": 300,
+        "i_parallel_units": "mA",
+        "vdc_parallel": 6.3,
+        "vdc_parallel_units": "V"
+    },
+    "name": "12AY7",
+    "ratings": {
+        "max_p_a": 1.5,
+        "max_p_a_units": "W",
+        "max_v_a_k": 300,
+        "max_v_a_k_units": "V",
+        "max_v_g1_k": 0,
+        "max_v_g1_k_units": "V",
+        "max_v_k": 90,
+        "max_v_k_units": "V",
+        "min_v_g1_k": -50,
+        "min_v_g1_k_units": "V",
+        "min_v_k": -90,
+        "min_v_k_units": "V"
+    },
+    "type": "Triode"
+}
