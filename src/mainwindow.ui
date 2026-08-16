@@ -56,7 +56,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-45</y>
+         <y>0</y>
          <width>388</width>
          <height>544</height>
         </rect>
@@ -975,9 +975,22 @@
     <addaction name="actionMaximize"/>
     <addaction name="actionMinimize"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <widget class="QMenu" name="menuVersion">
+     <property name="title">
+      <string>Version</string>
+     </property>
+    </widget>
+    <addaction name="actionAbout"/>
+    <addaction name="menuVersion"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTubes"/>
    <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionSavePlot">
    <property name="enabled">
@@ -1058,6 +1071,11 @@
    </property>
    <property name="text">
     <string>Browse Tubes</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

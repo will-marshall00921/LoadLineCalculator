@@ -59,6 +59,7 @@ class TubeDataDialog : public QDialog {
       >
     >
   > m_transfer_curve_map;
+  int m_csv_current_units;
 
   public:
     TubeDataDialog(QWidget* parent = nullptr);
@@ -105,6 +106,7 @@ class TubeDataDialog : public QDialog {
     Q_SLOT QString setTransferCurveCSVPath(const QString& path);
     Q_SLOT void browseTransferCurveCSVPath();
     Q_SLOT void setTransferCurveCSVPathEnabled(bool enabled);
+    Q_SLOT void setTransferCurveCSVCurrentUnits(int unitsIndex);
 
     Q_SLOT void saveTubeFile();
 

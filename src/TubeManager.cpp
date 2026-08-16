@@ -9,6 +9,9 @@
 #include <QtCore/QJsonArray>
 #include <QtCore/QFile>
 #include <QtCore/QByteArray>
+#ifdef DEBUG_BUILD
+#include <QtCore/QDebug>
+#endif // DEBUG_BUILD
 
 TubeManager::TubeManager()
   : m_thread { new QThread }
@@ -164,6 +167,25 @@ void TubeManager::loadTubeInfo(const QString& path) {
         }
       }
       emit allCurvesLoaded();
+      if (m_ratings.max_plate_power.valid && (m_ratings.max_plate_power.units == "W")) {
+        const double& max_power = m_ratings.max_plate_power.value;
+        QVector<double> voltages_v;
+        QVector<double> currents_ma;
+        voltages_v.reserve(999);
+        currents_ma.reserve(999);
+        double voltage = 1.0;
+        for (; voltage < 1000. ; voltage += 1.0) {
+          voltages_v.append(voltage);
+          currents_ma.append(
+            1E3 * max_power / (voltage)
+          );
+        }
+        emit plotMaxPlatePower(voltages_v, currents_ma);
+        #ifdef DEBUG_BUILD
+        qDebug() << "[TubeManager]{loadTubeInfo} Calculated power curve for Pa="
+                 << max_power << " W";
+        #endif // DEBUG_BUILD
+      }
     }
   }
   emit tubeManagerStatus(QString("Read file: ") + path);

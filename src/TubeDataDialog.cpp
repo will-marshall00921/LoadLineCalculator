@@ -50,6 +50,7 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
   , m_min_heater_cathode_voltage_v { 0. }
   , m_min_heater_cathode_voltage_enabled { false }
   , m_csv_path_enabled { false }
+  , m_csv_current_units { 0 }
   {
   ui->setupUi(this);
 
@@ -250,6 +251,12 @@ TubeDataDialog::TubeDataDialog(QWidget* parent)
     &QToolButton::clicked,
     this,
     &TubeDataDialog::showCSVHelp
+  );
+  QObject::connect(
+    ui->currentUnitsComboBox,
+    &QComboBox::currentIndexChanged,
+    this,
+    &TubeDataDialog::setTransferCurveCSVCurrentUnits
   );
   // QObject::connect(
   //   ui->buttonBox,
@@ -544,13 +551,23 @@ void TubeDataDialog::setTransferCurveCSVPathEnabled(bool enabled) {
   ui->csvPathBrowseButton->setEnabled(enabled);
   ui->csvPathLineEdit->setEnabled(enabled);
   ui->csvPathLabel->setEnabled(enabled);
+  ui->currentUnitsLabel->setEnabled(enabled);
+  ui->currentUnitsComboBox->setEnabled(enabled);
   QSignalBlocker lineEditBlocker(ui->csvPathLineEdit);
+  QSignalBlocker comboBoxBlocker(ui->currentUnitsComboBox);
   if (!enabled) {
     ui->csvPathLineEdit->clear();
+    ui->currentUnitsComboBox->setCurrentIndex(-1);
   } else {
     ui->csvPathLineEdit->setText(m_csv_path);
+    ui->currentUnitsComboBox->setCurrentIndex(m_csv_current_units);
   }
   m_csv_path_enabled = enabled;
+}
+
+void TubeDataDialog::setTransferCurveCSVCurrentUnits(int unitsIndex) {
+  if ((unitsIndex > 1) || (unitsIndex < 0)) { return; }
+  m_csv_current_units = unitsIndex;
 }
 
 void TubeDataDialog::saveTubeFile() {
@@ -868,6 +885,9 @@ void TubeDataDialog::loadTransferCurveCSV(const QString& path) {
     }
     xyPair.second = lineStrings[2].simplified()
       .toDouble(&convertedOk);
+    if (m_csv_current_units == 1) { // if units are A,
+      xyPair.second *= 1E3; // force mA from A
+    }
     if (!convertedOk) { 
       #ifdef DEBUG_BUILD
       qDebug() << "[TubeDataDialog]{loadTransferCurveCSV} WARNING: Skipping invalid line "

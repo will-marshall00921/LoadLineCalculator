@@ -12,6 +12,7 @@
 #include "Config.hpp"
 #include "Calculator.hpp"
 #include <QtCore/QStringLiteral>
+#include <QtWidgets/QWidgetAction>
 
 namespace Ui {
   class MainWindow;
@@ -27,6 +28,10 @@ class MainWindow : public QMainWindow {
   void* m_load_line_curve;
   void* m_bias_point;
   void* m_io_range;
+  void* m_max_power_curve;
+
+  QWidgetAction* versionWidgetAction;
+  QLabel* versionLabel;
 
   public:
     MainWindow(QWidget* parent = nullptr);
@@ -105,6 +110,8 @@ class MainWindow : public QMainWindow {
     void savePlot();
 
     Q_SLOT void createTube();
+
+    Q_SLOT void showAboutPage();
 
     Q_SLOT void openTubeDirectory();
 };

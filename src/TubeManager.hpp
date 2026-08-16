@@ -112,6 +112,7 @@ class TubeManager : public QObject {
     Q_SIGNAL void infoLoaded();
     Q_SIGNAL void curveLoaded(IVCurve curve);
     Q_SIGNAL void allCurvesLoaded();
+    Q_SIGNAL void plotMaxPlatePower(QVector<double> v, QVector<double> i);
 
     Q_SLOT void clearTubeInfo();
     Q_SLOT void loadTubeInfo(const QString& path);

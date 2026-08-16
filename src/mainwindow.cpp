@@ -11,6 +11,7 @@
 #include <QtWidgets/QFileDialog>
 #include "TubeDataDialog.hpp"
 #include <QtGui/QDesktopServices>
+#include "AboutPage.hpp"
 
 MainWindow::MainWindow(QWidget* parent)
   : QMainWindow { parent }
@@ -20,12 +21,26 @@ MainWindow::MainWindow(QWidget* parent)
   , m_load_line_curve { nullptr }
   , m_bias_point { nullptr }
   , m_io_range { nullptr }
+  , m_max_power_curve { nullptr }
+  , versionWidgetAction { nullptr }
+  , versionLabel { nullptr }
   {
   ui->setupUi(this);
+  setWindowTitle(QString("LoadLineCalculator - ") + LLC_VERSION);
+  versionWidgetAction = new QWidgetAction(ui->menuVersion);
+  versionLabel = new QLabel(LLC_VERSION, ui->menuVersion);
+  versionLabel->setStyleSheet("padding: 4px;");
+  versionWidgetAction->setDefaultWidget(versionLabel);
+  ui->menuVersion->addAction(versionWidgetAction);
   ui->plotWidget->xAxis->setLabel("Plate Voltage [V]");
   ui->plotWidget->yAxis->setLabel("Plate Current [mA]");
   ui->loadResistanceScalableSpinBox->setUnitsText(QString::fromStdWString(L"Ω"));
   ui->loadResistanceScalableSpinBox->enablePlaceholder();
+
+  // NOTE: "Max. screen dissipation" will be hidden
+  ui->calculatedMaxScreenDissipationLabel->setVisible(false);
+  ui->calculatedMaxScreenDissipationValueLabel->setVisible(false);
+  
   setupTubeManager();
   setupConfig();
   setupCalculator();
@@ -79,6 +94,13 @@ MainWindow::MainWindow(QWidget* parent)
     this,
     &MainWindow::openTubeDirectory
   );
+  QObject::connect(
+    ui->actionAbout,
+    &QAction::triggered,
+    this,
+    &MainWindow::showAboutPage
+  );
+
   m_config.parseTubeDirectory();
 }
 
@@ -245,6 +267,29 @@ void MainWindow::setupTubeManager() {
   );
   QObject::connect(
     m_tube_manager,
+    &TubeManager::plotMaxPlatePower,
+    this,
+    [this](const QVector<double>& x, const QVector<double>& y) {
+      if (m_max_power_curve == nullptr) {
+        QCPCurve* maxPowerCurve = new QCPCurve(
+          ui->plotWidget->xAxis, 
+          ui->plotWidget->yAxis
+        );
+        m_max_power_curve = reinterpret_cast<void*>(maxPowerCurve);
+        QPen curvePen = QPen(Qt::GlobalColor::red);
+        curvePen.setStyle(Qt::PenStyle::DashLine);
+        maxPowerCurve->setPen(curvePen);
+      }
+      QCPCurve* maxPowerCurve = reinterpret_cast<QCPCurve*>(m_max_power_curve);
+      maxPowerCurve->setData(x, y);
+      ui->plotWidget->replot();
+      #ifdef DEBUG_BUILD
+      qDebug() << "[MainWindow] Plotted maximum power!";
+      #endif // DEBUG_BUILD
+    }
+  );
+  QObject::connect(
+    m_tube_manager,
     &TubeManager::curveLoaded,
     this,
     [&](const IVCurve& curve) {
@@ -266,6 +311,7 @@ void MainWindow::setupTubeManager() {
       m_load_line_curve = nullptr;
       m_bias_point = nullptr;
       m_io_range = nullptr;
+      m_max_power_curve = nullptr;
       ui->plotWidget->replot();
       setLoadLineLabelEnabled(false);
       setStageInputLabelEnabled(false);
@@ -685,6 +731,12 @@ void MainWindow::createTube() {
     &MainWindow::showStatus
   );
   tubeDialog->exec();
+}
+
+void MainWindow::showAboutPage() {
+  AboutPage* aboutPage = new AboutPage(this);
+  aboutPage->setModal(true);
+  aboutPage->exec();
 }
 
 void MainWindow::openTubeDirectory() {

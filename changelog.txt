@@ -1,3 +1,22 @@
+### VERSION 1.0.0, August 16, 2026
+  Added Tubes:
+    - 6BK7-B
+    - 6CG7
+    - 5751
+
+  Changes:
+    - Hid the "Max. Screen Dissipation" calculated value until further notice
+    - Updated the build to no longer depend on an internal copy of QCustomPlot
+
+  Added Features:
+    - Added a plotted curve showing the maximum plate power dissipation when the
+      value is given
+    - Ability to use either Amps or milli-Amps to supply transfer curve currents
+      in the CSV inside the tube creation dialog
+    - Self-installation of the tube database on first execution
+    - Added a help section of the menu bar with a simple version label and about
+      page dialog
+
 #### VERSION 0.6.1, August 9, 2026
   Added Tubes:
     - 12AY7

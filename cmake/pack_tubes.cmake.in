@@ -1,0 +1,10 @@
+message(STATUS "Packing @TUBE_FILE_COUNT@ tube JSON files!")
+execute_process(
+  COMMAND @INSTALLED_LLC_EXE@ --pack "@CMAKE_CURRENT_SOURCE_DIR@/share/LoadLineCalculator/tubes" "@CMAKE_INSTALL_PREFIX@/bin/tubes.bin"
+)
+set(TUBE_FILES @TUBE_FILES@)
+message(STATUS "Packing complete:")
+foreach(TUBE_FILE IN LISTS TUBE_FILES)
+  message("\t${TUBE_FILE}")
+endforeach()
+message("\t\t-> @CMAKE_INSTALL_PREFIX@/bin/tubes.bin")
